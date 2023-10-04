@@ -1,22 +1,22 @@
 ## Requirement
 - 2 Ubuntu server virtual machines version 22.04 LTS
 ## Virtualbox network structure
-![image](https://github.com/suppi147/NT114.O11.ATCL-Information-Security-Specialization-Project/assets/97881547/01f8d54e-7703-4aac-9496-fb21895b0446)
+![image](https://github.com/suppi147/NT114.O11.ATCL-Information-Security-Specialization-Project/assets/97881547/5a5ebac8-4382-4765-a6c1-004ef862f4d0)
 ## Controller node and worker node installation
-- update and upgrade
+- Update and upgrade.
   ```
   apt update
   apt -y upgrade
   ```
-- add IPs to local domain name service /etc/host.
+- Add IPs to local domain name service /etc/host.
   ```
   printf "\n10.0.2.7 k8s-controller\n10.0.2.15 k8s-worker\n\n" >> /etc/hosts
   ```
-- choose module for kernel containerd.
+- Choose module for kernel containerd.
 ```
   printf "overlay\nbr_netfilter\n" >> /etc/modules-load.d/containerd.conf
 ```
-- Load 2 modules
+- Load 2 modules.
   1. `modprobe overlay`: This command loads the "overlay" kernel module into the Linux kernel. The "overlay" filesystem is commonly used in containerization technologies like Docker and containerd to provide a **layered file system for containers.**
   2. `modprobe br_netfilter`: This command loads the "br_netfilter" kernel module, which is related to **bridged networking** and is often used in **container setups** to enable **network filtering and firewall rules for containers.**
   ```
@@ -27,41 +27,47 @@
   ``` 
   printf "net.bridge.bridge-nf-call-iptables = 1\nnet.ipv4.ip_forward = 1\nnet.bridge.bridge-nf-call-ip6tables = 1\n" >>     /etc/sysctl.d/99-kubernetes-cri.conf
   ```
-- apply configuration in `/etc/sysctl.d/`.
+- Apply configuration in `/etc/sysctl.d/`.
   ```
   sysctl --system
   ```
-- install, extract and move containerd to bin.
+- Install, extract and move containerd to bin.
   ```
   wget https://github.com/containerd/containerd/releases/download/v1.6.16/containerd-1.6.16-linux-amd64.tar.gz -P /tmp/
   tar Cxzvf /usr/local /tmp/containerd-1.6.16-linux-amd64.tar.gz
   wget https://raw.githubusercontent.com/containerd/containerd/main/containerd.service -P /etc/systemd/system/
   ```
-- enable containerd.
+- Enable containerd.
   ```
   systemctl daemon-reload
   systemctl enable --now containerd
   ```
-- install runc.
+- Install runc.
   ```
   wget https://github.com/opencontainers/runc/releases/download/v1.1.4/runc.amd64 -P /tmp/
   install -m 755 /tmp/runc.amd64 /usr/local/sbin/runc
   ```
-- install cni-plugin for containerd.
+- Install cni-plugin for containerd.
   ```
   wget https://github.com/containernetworking/plugins/releases/download/v1.2.0/cni-plugins-linux-amd64-v1.2.0.tgz -P /tmp/
   mkdir -p /opt/cni/bin
   tar Cxzvf /opt/cni/bin /tmp/cni-plugins-linux-amd64-v1.2.0.tgz
   ```
-- reboot.
+- Configure containerd, manually edit and change systemdCgroup to true in /etc/containerd/config.toml and restart.
+  ```
+  mkdir -p /etc/containerd
+  containerd config default | tee /etc/containerd/config.toml
+  systemctl restart containerd
+  ```
+- Reboot.
   ```
   reboot
   ```
-- turn off swap.
+- Turn off swap.
   ```
   swapoff -a
   ```
-- install packages apt support packages.
+- Install packages apt support packages.
   ```
   apt-get update
   apt-get install -y apt-transport-https ca-certificates curl
@@ -108,6 +114,15 @@
   nano custom-resources.yaml
   ```
   ![image](https://github.com/suppi147/NT114.O11.ATCL-Information-Security-Specialization-Project/assets/97881547/92b46b21-6332-4e74-bc1b-3c4ec43c2e48)
+- Setup crontab.
+  ```
+  su@k8s-controller:~$ cat setup.sh
+  sudo swapoff -a
+  sudo strace -eopenat kubectl version
+  su@k8s-controller:~$ sudo crontab -e
+  #add
+  @reboot . /home/su/setup.sh
+  ```
 - Apply changes.
   ```
   kubectl apply -f custom-resources.yaml
@@ -117,11 +132,13 @@
   kubeadm token create --print-join-command
   ```
 ### Configuration on Worker node
-- turn off swap
+- Turn off swap.
   ```
   swapoff -a
   ```
-- add token from worker node
+- Add token from worker node.
   ```
   kubeadm join 10.0.2.7:6443 --token b79ii9.grhfc84n91hya0ha --discovery-token-ca-cert-hash sha256:57435c7db6df95bbea34d9c2a3e7233f4441042384239787a9828375b8cdd00f
   ```
+### Result
+![image](https://github.com/suppi147/NT114.O11.ATCL-Information-Security-Specialization-Project/assets/97881547/4b5d336d-b532-4635-b1a0-8387f6dc3e63)
