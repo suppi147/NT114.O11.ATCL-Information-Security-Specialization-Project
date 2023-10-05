@@ -136,6 +136,15 @@
   ```
   swapoff -a
   ```
+- Setup crontab.
+  ```
+  su@k8s-worker:~$ sudo chmod +X setup.sh
+  su@k8s-worker:~$ cat setup.sh
+  sudo swapoff -a
+  su@k8s-worker:~$ sudo crontab -e
+  #add
+  @reboot . /home/su/setup.sh
+  ```
 - Add token from worker node.
   ```
   kubeadm join 10.0.2.7:6443 --token b79ii9.grhfc84n91hya0ha --discovery-token-ca-cert-hash sha256:57435c7db6df95bbea34d9c2a3e7233f4441042384239787a9828375b8cdd00f
