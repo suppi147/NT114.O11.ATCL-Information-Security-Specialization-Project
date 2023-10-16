@@ -116,10 +116,12 @@
   ![image](https://github.com/suppi147/NT114.O11.ATCL-Information-Security-Specialization-Project/assets/97881547/92b46b21-6332-4e74-bc1b-3c4ec43c2e48)
 - Setup crontab.
   ```
-  su@k8s-controller:~$ cat setup.sh
+  root@k8s-controller:~# cat setup.sh
   sudo swapoff -a
-  sudo strace -eopenat kubectl version
-  su@k8s-controller:~$ sudo crontab -e
+  sudo mkdir -p $HOME/.kube
+  sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+  sudo chown $(id -u):$(id -g) $HOME/.kube/config
+  root@k8s-controller:~#sudo crontab -e
   #add
   @reboot . /home/su/setup.sh
   ```
