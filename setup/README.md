@@ -94,6 +94,7 @@
   - *delete cluster if needed.*
     ```
     kubeadm reset --force
+    rm -r $HOME/.kube
     ```
 - Init a kubernetes cluster.
   ```
