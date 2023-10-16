@@ -12,52 +12,20 @@
   ```
   printf "\n10.0.2.7 k8s-controller\n10.0.2.15 k8s-worker\n\n" >> /etc/hosts
   ```
-- Choose module for kernel containerd.
-```
-  printf "overlay\nbr_netfilter\n" >> /etc/modules-load.d/containerd.conf
-```
-- Load 2 modules.
-  1. `modprobe overlay`: This command loads the "overlay" kernel module into the Linux kernel. The "overlay" filesystem is commonly used in containerization technologies like Docker and containerd to provide a **layered file system for containers.**
-  2. `modprobe br_netfilter`: This command loads the "br_netfilter" kernel module, which is related to **bridged networking** and is often used in **container setups** to enable **network filtering and firewall rules for containers.**
+- install docker.io
   ```
-  modprobe overlay
-  modprobe br_netfilter
+  apt install docker.io
   ```
-- These parameters determine whether packets crossing a bridge are sent to iptables for processing. Most Kubernetes CNIs(Kubernetes 1.28 supports Container Network Interface) rely on iptables, so this is usually necessary for Kubernetes.
-  ``` 
-  printf "net.bridge.bridge-nf-call-iptables = 1\nnet.ipv4.ip_forward = 1\nnet.bridge.bridge-nf-call-ip6tables = 1\n" >>     /etc/sysctl.d/99-kubernetes-cri.conf
+- install cri-dockerd
   ```
-- Apply configuration in `/etc/sysctl.d/`.
-  ```
-  sysctl --system
-  ```
-- Install, extract and move containerd to bin.
-  ```
-  wget https://github.com/containerd/containerd/releases/download/v1.6.16/containerd-1.6.16-linux-amd64.tar.gz -P /tmp/
-  tar Cxzvf /usr/local /tmp/containerd-1.6.16-linux-amd64.tar.gz
-  wget https://raw.githubusercontent.com/containerd/containerd/main/containerd.service -P /etc/systemd/system/
-  ```
-- Enable containerd.
-  ```
+  git clone https://github.com/Mirantis/cri-dockerd.git
+  cd cri-dockerd
+  mkdir -p /usr/local/bin
+  install -o root -g root -m 0755 cri-dockerd /usr/local/bin/cri-dockerd
+  install packaging/systemd/* /etc/systemd/system
+  sed -i -e 's,/usr/bin/cri-dockerd,/usr/local/bin/cri-dockerd,' /etc/systemd/system/cri-docker.service
   systemctl daemon-reload
-  systemctl enable --now containerd
-  ```
-- Install runc.
-  ```
-  wget https://github.com/opencontainers/runc/releases/download/v1.1.4/runc.amd64 -P /tmp/
-  install -m 755 /tmp/runc.amd64 /usr/local/sbin/runc
-  ```
-- Install cni-plugin for containerd.
-  ```
-  wget https://github.com/containernetworking/plugins/releases/download/v1.2.0/cni-plugins-linux-amd64-v1.2.0.tgz -P /tmp/
-  mkdir -p /opt/cni/bin
-  tar Cxzvf /opt/cni/bin /tmp/cni-plugins-linux-amd64-v1.2.0.tgz
-  ```
-- Configure containerd, manually edit and change systemdCgroup to true in /etc/containerd/config.toml and restart.
-  ```
-  mkdir -p /etc/containerd
-  containerd config default | tee /etc/containerd/config.toml
-  systemctl restart containerd
+  systemctl enable --now cri-docker.socket
   ```
 - Reboot.
   ```
