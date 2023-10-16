@@ -66,7 +66,7 @@
     ```
 - Init a kubernetes cluster.
   ```
-  kubeadm init --pod-network-cidr 10.10.0.0/16 --kubernetes-version 1.26.1 --node-name k8s-controller
+  kubeadm init --pod-network-cidr 10.10.0.0/16 --kubernetes-version 1.26.1 --node-name k8s-controller --cri-socket=unix:///var/run/cri-dockerd.sock
   ```
 - Basic setup to use.
   ```
@@ -118,7 +118,7 @@
   ```
 - Add token from worker node.
   ```
-  kubeadm join 10.0.2.7:6443 --token b79ii9.grhfc84n91hya0ha --discovery-token-ca-cert-hash sha256:57435c7db6df95bbea34d9c2a3e7233f4441042384239787a9828375b8cdd00f
+  kubeadm join 10.0.2.7:6443 --token b79ii9.grhfc84n91hya0ha --discovery-token-ca-cert-hash sha256:57435c7db6df95bbea34d9c2a3e7233f4441042384239787a9828375b8cdd00f --cri-socket=unix:///var/run/cri-dockerd.sock
   ```
 ### Result
 ![image](https://github.com/suppi147/NT114.O11.ATCL-Information-Security-Specialization-Project/assets/97881547/4b5d336d-b532-4635-b1a0-8387f6dc3e63)
