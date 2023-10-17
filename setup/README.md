@@ -96,6 +96,7 @@
 - Install calico.
   ```
   kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.25.0/manifests/tigera-operator.yaml
+  kubectl apply -f custom-resources.yaml
   ```
 - Configure calico cidr network.
   ```
@@ -134,6 +135,10 @@
   su@k8s-worker:~$ sudo crontab -e
   #add
   @reboot . /home/su/setup.sh
+  ```
+- Create token.
+  ```
+  kubeadm token create --print-join-command
   ```
 - Add token from worker node.
   ```
