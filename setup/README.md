@@ -144,5 +144,12 @@
   ```
   kubeadm join 10.0.2.7:6443 --token b79ii9.grhfc84n91hya0ha --discovery-token-ca-cert-hash sha256:57435c7db6df95bbea34d9c2a3e7233f4441042384239787a9828375b8cdd00f --cri-socket=unix:///var/run/cri-dockerd.sock
   ```
+- Install k8s UI
+  ```
+  kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.7.0/aio/deploy/recommended.yaml
+  kubectl proxy --address=0.0.0.0 &
+  ```
+- Generate k8s token
+  https://github.com/kubernetes/dashboard/blob/master/docs/user/access-control/creating-sample-user.md
 ### Result
 ![image](https://github.com/suppi147/NT114.O11.ATCL-Information-Security-Specialization-Project/assets/97881547/4b5d336d-b532-4635-b1a0-8387f6dc3e63)
