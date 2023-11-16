@@ -15,6 +15,10 @@ In this small demonstration, Kong API Gateway will be deployed as an ingress con
   ![image](https://github.com/suppi147/NT114.O11.ATCL-Information-Security-Specialization-Project/assets/97881547/51023868-16ac-4989-a86b-6bb1a259007a)
 - Check for load balancer internal port.
   ![image](https://github.com/suppi147/NT114.O11.ATCL-Information-Security-Specialization-Project/assets/97881547/c13737d6-65c3-4e4c-bf0e-5731bdf182ca)
+- port forwarding
+  ```
+  kubectl port-forward -n noteziee service/kong-proxy 8080:80 &
+  ```
 - check foo and bar by http://localhost:31846
   ![image](https://github.com/suppi147/NT114.O11.ATCL-Information-Security-Specialization-Project/assets/97881547/a0245b6b-0935-4e0a-a55a-c8a1d7609018)
   
