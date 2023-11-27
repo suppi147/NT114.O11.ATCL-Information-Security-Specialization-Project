@@ -1,0 +1,142 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: session-management-db-service
+  namespace: dev
+  labels:
+    app: session-management
+spec:
+  ports:
+    - port: 3306
+      targetPort: 3306
+  selector:
+    app: session-management
+  type: ClusterIP
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: session-management-db-config
+  namespace: dev
+data:
+  MYSQL_ALLOW_EMPTY_PASSWORD: "1"
+  MYSQL_DATABASE: SessionManagementDB
+  MYSQL_USER: session-manager
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: session-management-sc
+  namespace: dev
+provisioner: k8s.io/hostpath
+volumeBindingMode: WaitForFirstConsumer
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: session-management-pv-volume
+  namespace: dev
+  labels:
+    type: local
+spec:
+  storageClassName: session-management-sc
+  capacity:
+    storage: 50Mi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/mnt/session-sql-init"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: session-management-pv-claim
+  namespace: dev
+spec:
+  storageClassName: session-management-sc
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Mi
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: session-management-db-sc
+  namespace: dev
+provisioner: k8s.io/hostpath
+volumeBindingMode: WaitForFirstConsumer
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: session-management-db-pv-volume
+  namespace: dev
+  labels:
+    type: local
+spec:
+  storageClassName: session-management-db-sc
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/mnt/session-management-storage"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: session-management-db-pv-claim
+  namespace: dev
+spec:
+  storageClassName: session-management-db-sc
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 3Gi      
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: session-management-db-deployment
+  namespace: dev
+  labels:
+    app: session-management
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: session-management
+  template:
+    metadata:
+      labels:
+        app: session-management
+    spec:
+      containers:
+        - name: session-management
+          image: mysql:latest
+          env:
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: session-management-db-password
+                  key: MYSQL_PASSWORD
+          envFrom:
+            - configMapRef:
+                name: session-management-db-config
+          ports:
+            - containerPort: 3306
+          volumeMounts:
+            - name: session-management-persistent-storage
+              mountPath: "/docker-entrypoint-initdb.d"
+            - name: session-management-db-persistent-storage
+              mountPath: "/var/lib/mysql"
+      volumes:
+        - name: session-management-persistent-storage
+          persistentVolumeClaim:
+            claimName: session-management-pv-claim
+        - name: session-management-db-persistent-storage
+          persistentVolumeClaim:
+            claimName: session-management-db-pv-claim

@@ -1,0 +1,35 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: noteziee-service
+  labels:
+    app: noteziee
+spec:
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    app: noteziee
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: noteziee-deployment
+  labels:
+    app: noteziee
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: noteziee
+  template:
+    metadata:
+      labels:
+        app: noteziee
+    spec:
+      containers:
+      - image: suppi147/noteziee
+        name: noteziee
+        ports:
+        - containerPort: 80
