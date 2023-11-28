@@ -1,35 +1,37 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: noteziee-service
+  name: session-management-service
+  namespace: dev
   labels:
-    app: noteziee
+    app: session-management
 spec:
   ports:
     - port: 80
       targetPort: 80
   selector:
-    app: noteziee
+    app: session-management
   type: ClusterIP
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: noteziee-deployment
+  name: session-management-deployment
+  namespace: dev
   labels:
-    app: noteziee
+    app: session-management
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: noteziee
+      app: session-management
   template:
     metadata:
       labels:
-        app: noteziee
+        app: session-management
     spec:
       containers:
-      - image: suppi147/noteziee
-        name: noteziee
+      - image: suppi147/session-management
+        name: session-management
         ports:
         - containerPort: 80
