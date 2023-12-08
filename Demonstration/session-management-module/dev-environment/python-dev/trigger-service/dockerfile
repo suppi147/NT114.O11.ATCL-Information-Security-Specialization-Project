@@ -1,6 +1,0 @@
-ARG CACHE_DATE=2023-12-01
-FROM python:3.8-slim
-WORKDIR /app
-COPY . /app
-RUN [ -f requirements.txt ] && pip install --upgrade pip && pip install --no-cache-dir -r requirements.txt || true
-CMD ["python", "test-connection.py"]

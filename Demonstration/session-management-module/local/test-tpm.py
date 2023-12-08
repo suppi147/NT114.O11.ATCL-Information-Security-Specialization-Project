@@ -6,16 +6,9 @@ import hashlib
 from base64 import urlsafe_b64encode, urlsafe_b64decode
 
 def encrypt(plaintext, key):
-    # Generate a random 96-bit nonce
     nonce = os.urandom(12)
-
-    # Create AES-GCM cipher with the provided key
     cipher = AESGCM(key)
-
-    # Encrypt the plaintext
     ciphertext = cipher.encrypt(nonce, plaintext, None)
-
-    # Return the nonce and ciphertext as a base64-encoded string
     return urlsafe_b64encode(nonce + ciphertext)
 
 def decrypt(ciphertext, key):

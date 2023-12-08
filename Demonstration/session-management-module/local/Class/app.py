@@ -4,9 +4,8 @@ from flask import Flask, request
 from time import sleep
 import logging
 
-logging.basicConfig(level=logging.DEBUG)
 app = Flask(__name__)
-
+logging.basicConfig(level=logging.DEBUG)
 @app.route('/test', methods=['POST'])
 def test_post():
     app.logger.debug("This is a debug message.")
