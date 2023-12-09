@@ -1,5 +1,8 @@
 import jwt
 from datetime import datetime, timedelta
+import logging
+
+logging.basicConfig(level=logging.DEBUG)
 class SignOperation():
     secret = None
     token = None

@@ -2,16 +2,20 @@ from sqlalchemy import create_engine, Column, Integer, Text, CHAR, text, exists
 from sqlalchemy.orm import sessionmaker, declarative_base
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.exc import OperationalError
-
+import os
 
 Base = declarative_base()
 
 class TokenTable(Base):
     __tablename__ = 'TokenTable'
-    db_url = "mysql://root:123@localhost:3306/SessionManagementDB"
+    mysql_password = os.environ.get('MYSQL_PASSWORD')
+    mysql_user = os.environ.get('MYSQL_USER')
+    mysql_database = os.environ.get('MYSQL_DATABASE')
+    db_url = f"mysql://{mysql_user}:{mysql_password}@session-management-db-service:3306/{mysql_database}"
+
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    uuid = Column(CHAR(36), nullable=False, server_default=text("(UUID())"))
+    uuid = Column(CHAR(36), nullable=False)
     token = Column(Text)
 
 class TokenManager:        
@@ -62,10 +66,9 @@ class TokenManager:
                 try:
                     token_entry = session.query(TokenTable).filter_by(uuid=uuid).first()
                     token = token_entry.token if token_entry else None
+                    session.close()
                 except NoResultFound:
                     token = None
-                finally:
-                    session.close()
                 return token
             except OperationalError as e:
                     print(e)
@@ -90,12 +93,10 @@ class TokenManager:
                     session = self.connect()
                     result = session.query(TokenTable).filter_by(uuid=uuid).first()
                     exists = (result is not None)
+                    session.close()
                 except NoResultFound:
                     exists = False
-                finally:
-                    session.close()
                 return exists
             except OperationalError as e:
                     print(e)
                     TokenManager.retries += 1 
-        

@@ -1,5 +1,7 @@
 import jwt
 from datetime import datetime, timedelta
+import os
+import base64
 class SignOperation():
     secret = None
     token = None
@@ -7,7 +9,10 @@ class SignOperation():
         pass
     @staticmethod
     def GetSecretFromTPM():
-        SignOperation.secret="secret"
+        hexSecret=os.environ.get('SIGN_KEY')
+        byte_data = bytes.fromhex(hexSecret)
+        SignOperation.secret = base64.b64encode(byte_data).decode('utf-8')
+        print("Sign secret has been retreived.")
         print("Sign secret has been retreived.")
     
     def Sign(self,payload_data):

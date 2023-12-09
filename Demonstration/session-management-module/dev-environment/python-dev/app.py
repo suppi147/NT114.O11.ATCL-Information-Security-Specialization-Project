@@ -9,7 +9,6 @@ app = Flask(__name__)
 
 @app.route('/test', methods=['POST'])
 def test_post():
-    app.logger.debug("This is a debug message.")
     if request.method == 'POST':
         userID_POST = request.form.get('userID')
         payload_data = {"user_id": userID_POST}

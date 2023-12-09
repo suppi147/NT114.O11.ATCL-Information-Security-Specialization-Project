@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: port-test-pod
+spec:
+  containers:
+  - name: port-test-container
+    image: alpine:latest
+    command: ["/bin/sh", "-c"]
+    args:
+    - |
+      nc -zv session-management-db-service 3306
+  restartPolicy: Never

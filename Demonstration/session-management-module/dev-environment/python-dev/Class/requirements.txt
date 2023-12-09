@@ -3,3 +3,4 @@ Flask
 pyjwt
 cryptography
 sqlalchemy
+mysqlclient
