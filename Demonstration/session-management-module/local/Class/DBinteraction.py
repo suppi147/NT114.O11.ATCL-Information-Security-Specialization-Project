@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, Column, Integer, Text, CHAR, text, exists
+from sqlalchemy import create_engine, Column, Integer, Text, CHAR, BINARY, text, exists
 from sqlalchemy.orm import sessionmaker, declarative_base
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.exc import OperationalError
@@ -13,11 +13,12 @@ class TokenTable(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     uuid = Column(CHAR(36), nullable=False, server_default=text("(UUID())"))
     token = Column(Text)
+    counter = Column(BINARY(32),nullable=True)
 
 class TokenManager:        
     retries = 0
     max_retries = 1000
-    def connect(self, max_retries=1000):
+    def connect(self):
         engine = create_engine(TokenTable.db_url)
         Base.metadata.create_all(engine)
         Session = sessionmaker(bind=engine)
@@ -99,3 +100,48 @@ class TokenManager:
                     print(e)
                     TokenManager.retries += 1 
         
+
+    def insert_counter(self, uuid, counter):
+        while TokenManager.retries < TokenManager.max_retries:
+            try:
+                session = self.connect()
+                token_entry = session.query(TokenTable).filter_by(uuid=uuid).first()
+                if token_entry:
+                    token_entry.counter = counter
+                    session.commit()
+                    print(f"Counter '{counter}' for Token with UUID '{uuid}' is inserted into the db")
+                else:
+                    print(f"Token with the UUID '{uuid}' not found. Insert failed.")
+                session.close()
+                break
+            except OperationalError as e:
+                print(e)
+                TokenManager.retries += 1
+
+    def update_counter_by_uuid(self, uuid, new_counter):
+        while TokenManager.retries < TokenManager.max_retries:
+            try:
+                session = self.connect()
+                token_entry = session.query(TokenTable).filter_by(uuid=uuid).first()
+                if token_entry:
+                    token_entry.counter = new_counter
+                    session.commit()
+                    print(f"Counter '{new_counter}' for Token with UUID '{uuid}' is updated into the db")
+                else:
+                    print(f"Token with the UUID '{uuid}' not found. Update failed.")
+                session.close()
+                break
+            except OperationalError as e:
+                print(e)
+                TokenManager.retries += 1
+    def get_counter_by_uuid(self, uuid):
+        while TokenManager.retries < TokenManager.max_retries:
+            try:
+                session = self.connect()
+                token_entry = session.query(TokenTable).filter_by(uuid=uuid).first()
+                counter = token_entry.counter if token_entry else None
+                session.close()
+                return counter
+            except OperationalError as e:
+                print(e)
+                TokenManager.retries += 1

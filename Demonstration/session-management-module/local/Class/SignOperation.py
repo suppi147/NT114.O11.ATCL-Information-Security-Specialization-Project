@@ -17,14 +17,14 @@ class SignOperation():
         if SignOperation.secret == None:
             print("!!! Sign secret has not been assigned.")
         else:
-            SignOperation.token = jwt.encode(payload_data, SignOperation.secret, algorithm="HS256")
+            SignOperation.token = jwt.encode(payload_data, SignOperation.secret, algorithm="HS512")
             print("token is signed: "+SignOperation.token)
             return SignOperation.token
             
     def CheckSignature(self, token):
         self.GetSecretFromTPM()
         try:
-            decoded_payload = jwt.decode(token, SignOperation.secret, algorithms=["HS256"])
+            decoded_payload = jwt.decode(token, SignOperation.secret, algorithms=["HS512"])
             print("Token is signed with the correct secret.")
             return decoded_payload
         except jwt.ExpiredSignatureError:

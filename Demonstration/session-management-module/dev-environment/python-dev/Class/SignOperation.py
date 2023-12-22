@@ -13,7 +13,6 @@ class SignOperation():
         byte_data = bytes.fromhex(hexSecret)
         SignOperation.secret = base64.b64encode(byte_data).decode('utf-8')
         print("Sign secret has been retreived.")
-        print("Sign secret has been retreived.")
     
     def Sign(self,payload_data):
         payload_data["exp"] = datetime.utcnow() + timedelta(seconds=10)
