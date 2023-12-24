@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, Column, Integer, Text, CHAR, BINARY, text, exists
+from sqlalchemy import create_engine, Column, Integer, Text, CHAR, VARCHAR, text, exists
 from sqlalchemy.orm import sessionmaker, declarative_base
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.exc import OperationalError
@@ -13,7 +13,7 @@ class TokenTable(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     uuid = Column(CHAR(36), nullable=False, server_default=text("(UUID())"))
     token = Column(Text)
-    counter = Column(BINARY(32),nullable=True)
+    browserFingerprint = Column(VARCHAR(64),nullable=True)
 
 class TokenManager:        
     retries = 0
@@ -70,6 +70,22 @@ class TokenManager:
                 return token
             except OperationalError as e:
                     print(e)
+                    TokenManager.retries += 1
+
+    def get_uuid_by_token(self, token):
+        while TokenManager.retries < TokenManager.max_retries:
+            try:
+                session = self.connect()    
+                try:
+                    uuid_entry = session.query(TokenTable).filter_by(token=token).first()
+                    uuid = uuid_entry.uuid if uuid_entry else None
+                except NoResultFound:
+                    uuid = None
+                finally:
+                    session.close()
+                return uuid
+            except OperationalError as e:
+                    print(e)
                     TokenManager.retries += 1        
 
     def token_exists(self, token):
@@ -101,15 +117,15 @@ class TokenManager:
                     TokenManager.retries += 1 
         
 
-    def insert_counter(self, uuid, counter):
+    def insert_fingerprint(self, uuid, fingerprint):
         while TokenManager.retries < TokenManager.max_retries:
             try:
                 session = self.connect()
                 token_entry = session.query(TokenTable).filter_by(uuid=uuid).first()
                 if token_entry:
-                    token_entry.counter = counter
+                    token_entry.counter = fingerprint
                     session.commit()
-                    print(f"Counter '{counter}' for Token with UUID '{uuid}' is inserted into the db")
+                    print(f"fingerprint '{fingerprint}' for Token with UUID '{uuid}' is inserted into the db")
                 else:
                     print(f"Token with the UUID '{uuid}' not found. Insert failed.")
                 session.close()
@@ -118,15 +134,15 @@ class TokenManager:
                 print(e)
                 TokenManager.retries += 1
 
-    def update_counter_by_uuid(self, uuid, new_counter):
+    def update_fingerprint_by_uuid(self, uuid, new_fingerprint):
         while TokenManager.retries < TokenManager.max_retries:
             try:
                 session = self.connect()
                 token_entry = session.query(TokenTable).filter_by(uuid=uuid).first()
                 if token_entry:
-                    token_entry.counter = new_counter
+                    token_entry.browserFingerprint = new_fingerprint
                     session.commit()
-                    print(f"Counter '{new_counter}' for Token with UUID '{uuid}' is updated into the db")
+                    print(f"fingerprint '{new_fingerprint}' for Token with UUID '{uuid}' is updated into the db")
                 else:
                     print(f"Token with the UUID '{uuid}' not found. Update failed.")
                 session.close()
@@ -134,14 +150,14 @@ class TokenManager:
             except OperationalError as e:
                 print(e)
                 TokenManager.retries += 1
-    def get_counter_by_uuid(self, uuid):
+    def get_fingerprint_by_uuid(self, uuid):
         while TokenManager.retries < TokenManager.max_retries:
             try:
                 session = self.connect()
                 token_entry = session.query(TokenTable).filter_by(uuid=uuid).first()
-                counter = token_entry.counter if token_entry else None
+                fingerprint = token_entry.browserFingerprint if token_entry else None
                 session.close()
-                return counter
+                return fingerprint
             except OperationalError as e:
                 print(e)
                 TokenManager.retries += 1

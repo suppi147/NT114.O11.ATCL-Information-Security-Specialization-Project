@@ -3,7 +3,6 @@ import sys
 import hashlib
 import hmac
 import base64
-from datetime import datetime, timedelta
 class SignOperation():
     secret = None
     token = None
@@ -14,8 +13,8 @@ class SignOperation():
         SignOperation.secret="secret"
         print("Sign secret has been retreived.")
     
-    def Sign(self,payload_data):
-        payload_data["exp"] = datetime.utcnow() + timedelta(seconds=10)
+    def Sign(self,payload_data,time):
+        payload_data["exp"] = time
         payload_data["auth-service"] = "trigger-service1"
         self.GetSecretFromTPM()
         if SignOperation.secret == None:
@@ -67,6 +66,7 @@ class SignOperation():
             token_without_tag = token_parts[0]+"."+token_parts[1]+"."+token_parts[2]
             SignOperation.check_hmac_sha3_256_signature(token_without_tag, SignOperation.secret.encode(), last_base64_tag)
             decoded_payload = jwt.decode(token_without_tag, SignOperation.secret, algorithms=["HS512"])
+            #check browser fingerprint
             print("Token is signed with the correct secret.")
             return decoded_payload
         except jwt.ExpiredSignatureError:

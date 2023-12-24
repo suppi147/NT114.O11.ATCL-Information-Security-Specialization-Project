@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Local Fingerprinting Test</title>
+</head>
+<body>
+  <script>
+    // Load FingerprintJS
+    const script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/npm/@fingerprintjs/fingerprintjs@3/dist/fp.min.js';
+    script.onload = function () {
+      // Use FingerprintJS
+      FingerprintJS.load().then(fp => {
+        fp.get().then(result => {
+          // Log the fingerprint to the console
+          const visitorId = result.visitorId;
+          console.log('Browser fingerprint:', visitorId);
+
+          sendFingerprintToServer(visitorId);
+        });
+      });
+    };
+    document.head.appendChild(script);
+
+    function sendFingerprintToServer(fingerprint) {
+      console.log('Fingerprint sent to server:', fingerprint);
+    }
+  </script>
+</body>
+</html>
