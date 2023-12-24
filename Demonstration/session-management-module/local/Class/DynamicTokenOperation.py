@@ -41,8 +41,6 @@ class DynamicTokenOperation():
                 return False
             if payload != None:
                 time = datetime.utcnow() + timedelta(minutes=5)
-                payload = {"user_id": uuid}
-                payload = {"fingerprint": "8db79807430561f22709adb678ddfd3a"}
                 token = signatureStage.Sign(payload,time)
                 DynamicTokenOperation.UpdateDynamicToken(uuid,token)
                 return token

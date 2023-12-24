@@ -15,7 +15,6 @@ class SignOperation():
     
     def Sign(self,payload_data,time):
         payload_data["exp"] = time
-        payload_data["auth-service"] = "trigger-service1"
         self.GetSecretFromTPM()
         if SignOperation.secret == None:
             print("!!! Sign secret has not been assigned.")
