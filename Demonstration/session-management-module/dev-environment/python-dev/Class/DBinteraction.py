@@ -73,7 +73,21 @@ class TokenManager:
             except OperationalError as e:
                     print(e)
                     TokenManager.retries += 1        
-
+    def get_uuid_by_token(self, token):
+        while TokenManager.retries < TokenManager.max_retries:
+            try:
+                session = self.connect()    
+                try:
+                    uuid_entry = session.query(TokenTable).filter_by(token=token).first()
+                    uuid = uuid_entry.uuid if uuid_entry else None
+                except NoResultFound:
+                    uuid = None
+                finally:
+                    session.close()
+                return uuid
+            except OperationalError as e:
+                    print(e)
+                    TokenManager.retries += 1    
     def token_exists(self, token):
         while TokenManager.retries < TokenManager.max_retries:
             try:

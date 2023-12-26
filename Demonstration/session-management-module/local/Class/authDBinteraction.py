@@ -16,12 +16,23 @@ class AuthTable(Base):
 class AuthManager:        
     retries = 0
     max_retries = 1000
-    def connect(self):
-        engine = create_engine(AuthTable.db_url)
-        Base.metadata.create_all(engine)
-        Session = sessionmaker(bind=engine)
-        session = Session()
-        return session
+    def update_fingerprint_by_uuid(self, uuid, new_fingerprint):
+        while AuthManager.retries < AuthManager.max_retries:
+            try:
+                session = self.connect()
+                token_entry = session.query(AuthManager).filter_by(uuid=uuid).first()
+                if token_entry:
+                    token_entry.browserFingerprint = new_fingerprint
+                    session.commit()
+                    print(f"fingerprint '{new_fingerprint}' for Token with UUID '{uuid}' is updated into the db")
+                else:
+                    print(f"Token with the UUID '{uuid}' not found. Update failed.")
+                session.close()
+                break
+            except OperationalError as e:
+                print(e)
+                AuthManager.retries += 1
+
 
     def get_fingerprint_by_uuid(self, uuid):
         while AuthManager.retries < AuthManager.max_retries:

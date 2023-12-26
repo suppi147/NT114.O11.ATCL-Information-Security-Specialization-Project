@@ -4,3 +4,4 @@ pyjwt
 cryptography
 sqlalchemy
 mysqlclient
+flask_cors
