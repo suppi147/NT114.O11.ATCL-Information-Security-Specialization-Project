@@ -22,7 +22,7 @@ class DynamicTokenOperation():
         interactDBStage.update_token(uuid,token)
         
 
-    def CheckValidToken(self,signToken):
+    def CheckValidToken(self,signToken,time):
         interactDBStage = TokenManager()
         signatureStage = SignOperation()
 
@@ -35,7 +35,6 @@ class DynamicTokenOperation():
                 DynamicTokenOperation.UpdateNullToken(uuid)
                 return False
             if payload != None:
-                time = datetime.utcnow() + timedelta(minutes=5)
                 token = signatureStage.Sign(payload,time)
                 DynamicTokenOperation.UpdateDynamicToken(uuid,token)
                 return token

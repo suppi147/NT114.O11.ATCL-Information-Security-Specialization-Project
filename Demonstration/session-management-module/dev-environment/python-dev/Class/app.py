@@ -5,36 +5,26 @@ from flask_cors import CORS
 from flask import Flask, request, make_response, render_template, redirect
 from datetime import datetime, timedelta
 
+TIMEOUT = 2
+
 def CraftToken(userID_POST):
     signatureStage = SignOperation()
     interactDBStage = TokenManager()
     payload_data = {"user_id": userID_POST}
     payload_data["fingerprint"] = "8db79807430561f22709adb678ddfd3a"
     payload_data["auth-service"] = "trigger-service1"
-    time = datetime.utcnow() + timedelta(minutes=2)
+    time = datetime.utcnow() + timedelta(minutes=TIMEOUT)
     signToken = signatureStage.Sign(payload_data,time)
-    if not interactDBStage.token_exists(signToken):
-        if not interactDBStage.uuid_exists(userID_POST):
+    if not interactDBStage.token_exists(signToken) and not interactDBStage.uuid_exists(userID_POST):
             interactDBStage.insert_token(signToken,userID_POST)
+            return "done create"
+    else:
+        if interactDBStage.uuid_exists(userID_POST):
+            interactDBStage.update_token(userID_POST,signToken)
+            return "done update"
         else:
-            print("uuid exist")
-    else:
-        print("token exist")
-
-def UpdateDynamicToken(userID_POST):
-    payload_data = {"user_id": userID_POST}
-    payload_data["fingerprint"] = "8db79807430561f22709adb678ddfd3a"
-    payload_data["auth-service"] = "trigger-service1"
-    signatureStage = SignOperation()
-    interactDBStage = TokenManager()
-    time = datetime.utcnow() + timedelta(minutes=2)
-    signToken = signatureStage.Sign(payload_data,time)
-    
-    if interactDBStage.uuid_exists(userID_POST):
-        interactDBStage.update_token(userID_POST,signToken)
-    else:
-        print("uuid not exist")
-
+            print("uuid not exist")
+            return "somthing wrong"
 
     
 
@@ -46,8 +36,8 @@ def test_post():
     if request.method == 'POST':
         userID_POST = request.form.get('userID')
         interactDBStage = TokenManager()
-        CraftToken(userID_POST)
-        UpdateDynamicToken(userID_POST)
+        flag = CraftToken(userID_POST)
+        print(flag)
         retrieveToken = interactDBStage.get_token_by_uuid(userID_POST)
         response = make_response('token create')
         response.set_cookie('token', value=retrieveToken)
@@ -65,7 +55,8 @@ def renew():
             if 'token=' in cookie:
                 token = cookie.split('token=')[1]
                 print(f'Token: {token}')
-                action = tokenRenew.CheckValidToken(token)
+                time = datetime.utcnow() + timedelta(minutes=TIMEOUT)
+                action = tokenRenew.CheckValidToken(token,time)
                 response = None
                 if action == False:
                     response = make_response('Token is fully expired')

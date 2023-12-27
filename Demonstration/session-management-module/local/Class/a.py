@@ -8,7 +8,7 @@ payload_data["auth-service"] = "trigger-service1"
 payload_data["exp"] = datetime.utcnow() + timedelta(seconds=5)
 
 # Create unsigned JWT
-unsigned_token = jwt.encode(payload_data, key=None,algorithm=None)
+unsigned_token = "eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJ1c2VyX2lkIjoiMTE5OGM1ODEtMTg2Zi00ZjE2LWFjNzYtODRjYWZiMDlhMGVkIiwiZmluZ2VycHJpbnQiOiI4ZGI3OTgwNzQzMDU2MWYyMjcwOWFkYjY3OGRkZmQzYSIsImF1dGgtc2VydmljZSI6InRyaWdnZXItc2VydmljZTEiLCJleHAiOjE3MDM2ODY4MDF9."
 
 
 payload_data = jwt.decode(unsigned_token, options={"verify_signature": False})
@@ -20,7 +20,7 @@ if expiration_time:
     current_datetime = datetime.utcnow()
 
     if current_datetime < expiration_datetime:
-        print("Token is not expired.")
+        print("Token is not expired.",expiration_time)
     else:
         print("Token has expired.")
 else:
