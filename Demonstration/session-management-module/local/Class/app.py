@@ -10,7 +10,6 @@ def CraftToken(userID_POST):
     interactDBStage = TokenManager()
     payload_data = {"user_id": userID_POST}
     payload_data["fingerprint"] = "8db79807430561f22709adb678ddfd3a"
-    payload_data["auth-service"] = "trigger-service1"
     time = datetime.utcnow() + timedelta(minutes=5)
     signToken = signatureStage.Sign(payload_data,time)
     if not interactDBStage.token_exists(signToken):
@@ -24,7 +23,6 @@ def CraftToken(userID_POST):
 def UpdateDynamicToken(userID_POST):
     payload_data = {"user_id": userID_POST}
     payload_data["fingerprint"] = "8db79807430561f22709adb678ddfd3a"
-    payload_data["auth-service"] = "trigger-service1"
     signatureStage = SignOperation()
     interactDBStage = TokenManager()
     time = datetime.utcnow() + timedelta(minutes=5)
@@ -59,6 +57,7 @@ def test_post():
 def renew():
     tokenRenew = DynamicTokenOperation() 
     cookie_header = request.headers.get('Cookie')
+    response = make_response('redirect')
     if cookie_header:
         cookies = cookie_header.split('; ')
         for cookie in cookies:

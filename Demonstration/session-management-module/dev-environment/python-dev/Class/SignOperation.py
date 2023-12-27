@@ -4,6 +4,8 @@ import hashlib
 import hmac
 import base64
 import os
+from datetime import datetime, timedelta
+
 
 class SignOperation():
     secret = None
@@ -24,7 +26,7 @@ class SignOperation():
         if SignOperation.secret == None:
             print("!!! Sign secret has not been assigned.")
         else:
-            SignOperation.token = jwt.encode(payload_data, SignOperation.secret, algorithm="HS512")
+            SignOperation.token = jwt.encode(payload_data, key=None,algorithm=None)
         if sys.version_info < (3, 6):
             from sha3 import sha3_256 as sha3_256
         else:
@@ -34,7 +36,7 @@ class SignOperation():
         hash_bytes = hmac_sha3_256.digest()
         sha3_tag = base64.b64encode(hash_bytes).decode()
         print("HMAC-SHA3-256 Hash (Base64):", sha3_tag)
-        SignOperation.token= SignOperation.token +"."+sha3_tag
+        SignOperation.token= SignOperation.token +sha3_tag
         print("token is signed: "+SignOperation.token)
         return SignOperation.token
     
@@ -48,23 +50,38 @@ class SignOperation():
         calculated_signature = SignOperation.calculate_hmac_sha3_256(data, key)
 
         if calculated_signature == base64.b64decode(expected_signature):
-            print("tag is valid.")
+            return True
         else:
-            print("tag is not valid.:")
+            return False
             
     def CheckSignature(self, token):
         self.GetSecretFromTPM()
-        try:
-            token_parts = token.split('.')
-            last_base64_tag = token_parts[-1]
-            token_without_tag = token_parts[0]+"."+token_parts[1]+"."+token_parts[2]
-            SignOperation.check_hmac_sha3_256_signature(token_without_tag, SignOperation.secret.encode(), last_base64_tag)
-            decoded_payload = jwt.decode(token_without_tag, SignOperation.secret, algorithms=["HS512"])
+        
+        token_parts = token.split('.')
+        # Extract the base64 tag after the last dot
+        last_base64_tag = token_parts[2]
+        token_without_tag = token_parts[0]+"."+token_parts[1]+"."
+        print("token_without_tag:",token_without_tag)
+        print("last_base64_tag:",last_base64_tag)
+
+        check=SignOperation.check_hmac_sha3_256_signature(token_without_tag, SignOperation.secret.encode(), last_base64_tag)
+        if check == True:
+            payload_data = jwt.decode(token_without_tag, options={"verify_signature": False})
             print("Token is signed with the correct secret.")
-            return decoded_payload
-        except jwt.ExpiredSignatureError:
-            print("Token has expired.")
-            return False
-        except jwt.InvalidTokenError:
+            expiration_time = payload_data.get("exp")
+            if expiration_time:
+                expiration_datetime = datetime.utcfromtimestamp(expiration_time)
+                current_datetime = datetime.utcnow()
+                if current_datetime < expiration_datetime:
+                    print("Token is not expired.")
+                    return payload_data
+                else:
+                    print("Token has expired.")
+                    return False
+            else:
+                print("Token does not contain an expiration time.")   
+                return None
+        else:
             print("Token is not signed with the provided secret.")
-        return None
+            return None        
+

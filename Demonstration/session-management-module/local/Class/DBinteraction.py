@@ -8,7 +8,7 @@ Base = declarative_base()
 
 class TokenTable(Base):
     __tablename__ = 'TokenTable'
-    db_url = "mysql://root:123@localhost:3306/SessionManagementDB"
+    db_url = "mysql://root@localhost:3306/SessionManagementDB"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     uuid = Column(CHAR(36), nullable=False, server_default=text("(UUID())"))
