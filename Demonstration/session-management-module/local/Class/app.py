@@ -10,7 +10,7 @@ def CraftToken(userID_POST):
     interactDBStage = TokenManager()
     payload_data = {"user_id": userID_POST}
     payload_data["fingerprint"] = "8db79807430561f22709adb678ddfd3a"
-    time = datetime.utcnow() + timedelta(minutes=5)
+    time = datetime.utcnow() + timedelta(minutes=2)
     signToken = signatureStage.Sign(payload_data,time)
     if not interactDBStage.token_exists(signToken):
         if not interactDBStage.uuid_exists(userID_POST):
@@ -25,7 +25,7 @@ def UpdateDynamicToken(userID_POST):
     payload_data["fingerprint"] = "8db79807430561f22709adb678ddfd3a"
     signatureStage = SignOperation()
     interactDBStage = TokenManager()
-    time = datetime.utcnow() + timedelta(minutes=5)
+    time = datetime.utcnow() + timedelta(minutes=2)
     signToken = signatureStage.Sign(payload_data,time)
     
     if interactDBStage.uuid_exists(userID_POST):
