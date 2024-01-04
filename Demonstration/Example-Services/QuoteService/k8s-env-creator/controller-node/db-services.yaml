@@ -1,0 +1,142 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: quote-service-db-service
+  namespace: dev
+  labels:
+    app: quote-service
+spec:
+  ports:
+    - port: 3306
+      targetPort: 3306
+  selector:
+    app: quote-service
+  type: ClusterIP
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: quote-service-db-config
+  namespace: dev
+data:
+  MYSQL_ALLOW_EMPTY_PASSWORD: "1"
+  MYSQL_DATABASE: QuoteServiceDB
+  MYSQL_USER: quote-manager
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: quote-service-sc
+  namespace: dev
+provisioner: k8s.io/hostpath
+volumeBindingMode: WaitForFirstConsumer
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: quote-service-pv-volume
+  namespace: dev
+  labels:
+    type: local
+spec:
+  storageClassName: quote-service-sc
+  capacity:
+    storage: 50Mi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/mnt/quote-sql-init"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: quote-service-pv-claim
+  namespace: dev
+spec:
+  storageClassName: quote-service-sc
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Mi
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: quote-service-db-sc
+  namespace: dev
+provisioner: k8s.io/hostpath
+volumeBindingMode: WaitForFirstConsumer
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: quote-service-db-pv-volume
+  namespace: dev
+  labels:
+    type: local
+spec:
+  storageClassName: quote-service-db-sc
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/mnt/quote-service-storage"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: quote-service-db-pv-claim
+  namespace: dev
+spec:
+  storageClassName: quote-service-db-sc
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 3Gi      
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: quote-service-db-deployment
+  namespace: dev
+  labels:
+    app: quote-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: quote-service
+  template:
+    metadata:
+      labels:
+        app: quote-service
+    spec:
+      containers:
+        - name: quote-service
+          image: mysql:latest
+          env:
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: quote-service-db-password
+                  key: MYSQL_PASSWORD
+          envFrom:
+            - configMapRef:
+                name: quote-service-db-config
+          ports:
+            - containerPort: 3306
+          volumeMounts:
+            - name: quote-service-persistent-storage
+              mountPath: "/docker-entrypoint-initdb.d"
+            - name: quote-service-db-persistent-storage
+              mountPath: "/var/lib/mysql"
+      volumes:
+        - name: quote-service-persistent-storage
+          persistentVolumeClaim:
+            claimName: quote-service-pv-claim
+        - name: quote-service-db-persistent-storage
+          persistentVolumeClaim:
+            claimName: quote-service-db-pv-claim
