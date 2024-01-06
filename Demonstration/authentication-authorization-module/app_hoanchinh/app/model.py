@@ -9,7 +9,7 @@ app = Flask(__name__)
 
 mysql = MySQL(app)
 
-app.config['MYSQL_HOST'] = 'localhost'
+app.config['MYSQL_HOST'] = 'db'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = '123' 
 app.config['MYSQL_DB'] = 'myDB'
@@ -92,3 +92,5 @@ def get_service(user_id):
                 result_string = ', '.join(service_names)
                 return result_string
         return False
+
+       

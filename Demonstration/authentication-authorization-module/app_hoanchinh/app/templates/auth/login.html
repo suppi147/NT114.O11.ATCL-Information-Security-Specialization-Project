@@ -67,7 +67,8 @@
 
         // Xử lý thông báo thành công
         if (data.message) {
-          document.getElementById('successContainer').innerText = data.message;
+          document.getElementById('dataContainer').innerText = data.message;
+          // window.location.href = 'http://127.0.0.1:2000/user';
         }
 
         // Xử lý lỗi từ server và hiển thị trong div errorContainer
@@ -77,7 +78,8 @@
 
         // Xử lý dữ liệu từ server và hiển thị trong div dataContainer
         if (data.data) {
-          document.getElementById('dataContainer').innerText = JSON.stringify(data.data);
+          document.getElementById('successContainer').innerText = JSON.stringify(data.data);
+          window.location.href = 'http://127.0.0.1:2000/user';
         }
       })
       .catch(error => {

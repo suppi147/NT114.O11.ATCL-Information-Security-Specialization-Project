@@ -8,9 +8,10 @@ SECRET_KEY = 'toan'
 def token_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
-        token = None
-        if "Authorization" in request.headers:
-            token = request.headers["Authorization"].split(" ")[1]
+        token = request.cookies.get('token')
+        # token = None
+        # if "Authorization" in request.headers:
+        #     token = request.headers["Authorization"].split(" ")[1]
         if not token:
             return {
                 "message": "Authentication Token is missing!",
@@ -19,8 +20,8 @@ def token_required(f):
             }, 401
         try:
             data=jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
-            username = model.get_by_id(data["user_id"])
-            current_user = model.get_user(username['username'])
+            current_user = model.get_by_id(data["user_id"])
+            # current_user = model.get_user(username['username'])
             # current_user=model.get_by_id(data["user_id"])
             if current_user is None:
                 return {
@@ -35,6 +36,7 @@ def token_required(f):
                 "error": str(e)
             }, 500
 
-        return f(current_user, *args, **kwargs)
+        return f(data, *args, **kwargs)
 
     return decorated
+
