@@ -1,0 +1,46 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: authen-service
+  namespace: dev
+  labels:
+    app: authen-service
+spec:
+  ports:
+    - port: 8008
+      targetPort: 80
+  selector:
+    app: authen-service
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: authen-service-deployment
+  namespace: dev
+  labels:
+    app: authen-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: authen-service
+  template:
+    metadata:
+      labels:
+        app: authen-service
+    spec:
+      containers:
+      - image: suppi147/authen-service
+        name: authen-service
+        env:
+          - name: MYSQL_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: authen-service-db-password
+                key: MYSQL_PASSWORD
+        envFrom:
+          - configMapRef:
+              name: authen-service-db-config       
+        ports:
+        - containerPort: 80
