@@ -5,16 +5,18 @@ import validate
 import model
 import jwt
 import aes
+import os
 from auth_middleware import token_required
 app = Flask(__name__)
 
-secret_key = 'asdfghjklqwertyu'
+secret_key = os.environ.get('authen-totp-secret-key')
 
-# Enter your database connection details below
-app.config['MYSQL_HOST'] = 'db'
-app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = '123' 
-app.config['MYSQL_DB'] = 'myDB'
+mysql = MySQL(app)
+
+app.config['MYSQL_HOST'] = 'authen-service-db-service'
+app.config['MYSQL_USER'] = os.environ.get('MYSQL_USER')
+app.config['MYSQL_PASSWORD'] = os.environ.get('MYSQL_PASSWORD')
+app.config['MYSQL_DB'] = os.environ.get('MYSQL_DATABASE')
 SECRET_KEY = 'toan'
 
 # Initialize MySQL
@@ -23,7 +25,6 @@ mysql = MySQL(app)
 # Registration route
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-
     try:
         if request.method == 'POST':
             data = request.json
@@ -163,4 +164,4 @@ def get_service2(current_user):
     return 'you are not allow to use service 2'
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=2000, debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)

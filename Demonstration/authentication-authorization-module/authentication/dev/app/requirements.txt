@@ -1,0 +1,9 @@
+flask
+flask_restful
+mysql-connector-python
+flask-mysqldb
+pyotp
+pycrypto
+pycryptodome
+cryptography
+PyJWT

@@ -11,3 +11,6 @@ CREATE TABLE `users` (
   `key` varchar(100) NOT NULL,
   PRIMARY KEY (`id`)
 );
+INSERT INTO `users` (`id`, `username`, `password`, `email`, `key`) VALUES (1, 'conmeo', 'conmeo','conmeo@gmail.com','test');
+COMMIT;
+

@@ -66,6 +66,7 @@ def register_service(userid, service):
         mysql.connection.commit()
         return True
 
+
 def get_key_user(username):
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute('SELECT `key` FROM users WHERE username=%s', (username,))

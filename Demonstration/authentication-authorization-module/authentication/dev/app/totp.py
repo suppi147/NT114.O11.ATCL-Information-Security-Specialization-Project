@@ -4,21 +4,22 @@ import MySQLdb.cursors
 import re
 import pyotp
 import time
+import os
 import aes
 
 app = Flask(__name__)
 
 mysql = MySQL(app)
 
-app.config['MYSQL_HOST'] = 'db'
-app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = '123' 
-app.config['MYSQL_DB'] = 'myDB'
+app.config['MYSQL_HOST'] = 'authen-service-db-service'
+app.config['MYSQL_USER'] = os.environ.get('MYSQL_USER')
+app.config['MYSQL_PASSWORD'] = os.environ.get('MYSQL_PASSWORD')
+app.config['MYSQL_DB'] = os.environ.get('MYSQL_DATABASE')
 
 def totp(username, secret_key):
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     cursor.execute('SELECT `key` FROM users WHERE username=%s', (username,))
-    user = cursor.fetchone()  # Sử dụng fetchone() thay vì fetchall() để chỉ lấy một dòng dữ liệu
+    user = cursor.fetchone()
     cursor.close()
 
     if user:
