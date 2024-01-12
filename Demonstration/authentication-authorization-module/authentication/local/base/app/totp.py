@@ -15,7 +15,7 @@ app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = '123' 
 app.config['MYSQL_DB'] = 'myDB'
 
-def totp(username, secret_key):
+def GenerateCode(username, secret_key):
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     cursor.execute('SELECT `key` FROM users WHERE username=%s', (username,))
     user = cursor.fetchone()  # Sử dụng fetchone() thay vì fetchall() để chỉ lấy một dòng dữ liệu

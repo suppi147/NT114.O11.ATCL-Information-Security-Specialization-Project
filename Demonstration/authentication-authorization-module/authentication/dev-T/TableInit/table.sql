@@ -9,7 +9,8 @@ CREATE TABLE `users` (
   `password` varchar(80) NOT NULL,
   `fingerprint` varchar(40) NOT NULL,
   `totpkey` varchar(100) NOT NULL,
-  `services` TEXT NOT NULL,
   PRIMARY KEY (`id`)
 );
+INSERT INTO `users` (`id`, `username`, `password`, `email`, `key`) VALUES (1, 'conmeo', 'conmeo','conmeo@gmail.com','test');
+COMMIT;
 

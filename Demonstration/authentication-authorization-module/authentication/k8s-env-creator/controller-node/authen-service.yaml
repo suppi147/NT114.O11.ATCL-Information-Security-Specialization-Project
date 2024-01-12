@@ -39,6 +39,11 @@ spec:
               secretKeyRef:
                 name: authen-service-db-password
                 key: MYSQL_PASSWORD
+          - name: authen_totp_secret_key
+            valueFrom:
+              secretKeyRef:
+                name: authen-totp-secret-key
+                key: authen_totp_secret_key
         envFrom:
           - configMapRef:
               name: authen-service-db-config       

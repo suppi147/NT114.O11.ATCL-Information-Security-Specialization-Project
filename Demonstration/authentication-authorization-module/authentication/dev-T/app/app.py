@@ -9,7 +9,7 @@ import os
 from auth_middleware import token_required
 app = Flask(__name__)
 
-secret_key = os.environ.get('authen-totp-secret-key')
+secret_key = os.environ.get('authen_totp_secret_key')
 
 mysql = MySQL(app)
 
@@ -36,9 +36,6 @@ def register():
                     "data": None,
                     "error": "Bad request"
                 }, 400
-            is_validated = validate.validate_user(**data)
-            if is_validated is not True:
-                return dict(message='Invalid data', data=None, error=is_validated), 400
             
             user = model.create(**data)
             if not user:
@@ -48,8 +45,8 @@ def register():
                     "data": None
                 }, 409
             else: 
-                for service in services:
-                    model.register_service(user['id'],service)
+                #for service in services:
+                #    model.register_service(user['id'],service)
                 return {
                     "message": "Successfully created new user and service. Please save your secret key in Google Authenticator",
                     "data": {"secret_key": aes.decrypt_aes_cbc(user['key'], secret_key)}

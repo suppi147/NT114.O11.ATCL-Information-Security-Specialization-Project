@@ -10,12 +10,12 @@ app = Flask(__name__)
 
 mysql = MySQL(app)
 
+secret_key = os.environ.get('authen_totp_secret_key')
+
 app.config['MYSQL_HOST'] = 'authen-service-db-service'
 app.config['MYSQL_USER'] = os.environ.get('MYSQL_USER')
 app.config['MYSQL_PASSWORD'] = os.environ.get('MYSQL_PASSWORD')
 app.config['MYSQL_DB'] = os.environ.get('MYSQL_DATABASE')
-
-secret_key = os.environ.get('authen-totp-secret-key')
 
 def create(**arg):
     username = arg.get('username')
@@ -30,7 +30,7 @@ def create(**arg):
         try:
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
             password2 = hash_function.sha3_256(password)
-            cursor.execute('INSERT INTO users VALUES (NULL, %s, %s, %s, %s)', (username, password2, email, key2))
+            cursor.execute('INSERT INTO users(uuid, username, password, email, `key`) VALUES ("NULL", %s, %s, %s, %s)', (username, password2, email, key2))
             mysql.connection.commit()
             return get_user(username)
         except MySQLdb.Error as e:
