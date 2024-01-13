@@ -11,7 +11,7 @@ class TokenTable(Base):
     mysql_password = os.environ.get('MYSQL_PASSWORD')
     mysql_user = os.environ.get('MYSQL_USER')
     mysql_database = os.environ.get('MYSQL_DATABASE')
-    db_url = f"mysql://{mysql_user}:{mysql_password}@session-management-db-service:3306/{mysql_database}"
+    db_url = f"mysql://{mysql_user}:{mysql_password}@authorization-db-service:3306/{mysql_database}"
 
 
     id = Column(Integer, primary_key=True, autoincrement=True)

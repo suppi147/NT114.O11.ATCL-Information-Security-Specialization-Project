@@ -1,56 +1,56 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: session-management-service
+  name: authorization-service
   namespace: dev
   labels:
-    app: session-management
+    app: authorization
 spec:
   ports:
     - port: 8008
       targetPort: 80
   selector:
-    app: session-management
+    app: authorization
   type: ClusterIP
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: session-management-deployment
+  name: authorization-deployment
   namespace: dev
   labels:
-    app: session-management
+    app: authorization
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: session-management
+      app: authorization
   template:
     metadata:
       labels:
-        app: session-management
+        app: authorization
     spec:
       containers:
-      - image: suppi147/session-management
-        name: session-management
+      - image: suppi147/authorization
+        name: authorization
         env:
           - name: MYSQL_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: session-management-db-password
+                name: authorization-db-password
                 key: MYSQL_PASSWORD
           - name: CRYPTO_KEY
             valueFrom:
               secretKeyRef:
-                name: session-management-crypto-key
+                name: authorization-crypto-key
                 key: CRYPTO_KEY
           - name: SIGN_KEY
             valueFrom:
               secretKeyRef:
-                name: session-management-sign-key
+                name: authorization-sign-key
                 key: SIGN_KEY
         envFrom:
           - configMapRef:
-              name: session-management-db-config        
+              name: authorization-db-config        
         ports:
         - containerPort: 80
