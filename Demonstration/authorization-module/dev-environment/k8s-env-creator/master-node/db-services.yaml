@@ -22,6 +22,8 @@ data:
   MYSQL_ALLOW_EMPTY_PASSWORD: "1"
   MYSQL_DATABASE: AuthorizationDB
   MYSQL_USER: authorization-manager
+  AUTHEN_MYSQL_DATABASE: AuthenServiceDB
+  AUTHEN_MYSQL_USER: authen-manager
 ---
 apiVersion: storage.k8s.io/v1
 kind: StorageClass

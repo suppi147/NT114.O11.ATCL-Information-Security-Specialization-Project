@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: routing-service
+  namespace: dev
+  labels:
+    app: routing-service
+spec:
+  ports:
+    - port: 8008
+      targetPort: 80
+  selector:
+    app: routing-service
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: routing-service-deployment
+  namespace: dev
+  labels:
+    app: routing-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: routing-service
+  template:
+    metadata:
+      labels:
+        app: routing-service
+    spec:
+      containers:
+      - image: suppi147/routing-service
+        name: routing-service      
+        ports:
+        - containerPort: 80

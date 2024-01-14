@@ -1,5 +1,0 @@
-flask
-pyotp
-cryptography
-pycryptodome
-pycrypto

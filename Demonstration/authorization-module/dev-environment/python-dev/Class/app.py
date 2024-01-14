@@ -1,8 +1,9 @@
 from SignOperation import SignOperation
 from DBinteraction import TokenManager
+from AuthenPointerDBinteraction import AuthPointerManager
 from DynamicTokenOperation import DynamicTokenOperation
 from flask_cors import CORS 
-from flask import Flask, request, make_response, render_template, redirect
+from flask import Flask, request, make_response, render_template, jsonify
 from datetime import datetime, timedelta
 
 TIMEOUT = 2
@@ -10,9 +11,10 @@ TIMEOUT = 2
 def CraftToken(userID_POST):
     signatureStage = SignOperation()
     interactDBStage = TokenManager()
+    authPointerManager= AuthPointerManager()
     payload_data = {"user_id": userID_POST}
-    payload_data["fingerprint"] = "8db79807430561f22709adb678ddfd3a"
-    payload_data["auth-service"] = "trigger-service1"
+    payload_data["fingerprint"] = authPointerManager.get_fingerprint_by_uuid(userID_POST)
+    payload_data["auth-service"] = authPointerManager.get_services_by_uuid(userID_POST)
     time = datetime.utcnow() + timedelta(minutes=TIMEOUT)
     signToken = signatureStage.Sign(payload_data,time)
     if not interactDBStage.token_exists(signToken) and not interactDBStage.uuid_exists(userID_POST):
@@ -34,14 +36,17 @@ CORS(app)
 @app.route('/token', methods=['POST'])
 def test_post():
     if request.method == 'POST':
-        userID_POST = request.form.get('userID')
+        authPointerManager= AuthPointerManager()
+        data = request.json
+        username = data.get('username')
+        userID_POST =authPointerManager.get_uuid_by_username(username)
         interactDBStage = TokenManager()
-        flag = CraftToken(userID_POST)
-        print(flag)
+        CraftToken(userID_POST)
         retrieveToken = interactDBStage.get_token_by_uuid(userID_POST)
-        response = make_response('token create')
-        response.set_cookie('token', value=retrieveToken)
-        return response
+        token_data = {
+            "token": retrieveToken
+        }
+        return jsonify(token_data),200
     else:
         return 'This route only accepts POST requests.'
 

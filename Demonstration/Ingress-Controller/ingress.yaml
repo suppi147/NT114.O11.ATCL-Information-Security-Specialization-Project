@@ -16,6 +16,6 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: authorization-service
+            name: routing-service
             port:
               number: 8008

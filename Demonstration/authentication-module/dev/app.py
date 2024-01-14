@@ -35,7 +35,6 @@ def register():
                     "message": "Successfully created new user and service. Please save your secret key in Google Authenticator",
                     "secret_key": totpkey
                     }, 201
-    return render_template('auth/register.html')
 @app.route('/login', methods=['GET','POST'])
 def login():
     if request.method == 'POST':
@@ -51,14 +50,16 @@ def login():
             returncode = totp.totp(username)
             if returncode is not None and returncode == code:      
                 interactDBStage.update_fingerprint_by_username(username,fingerprint)
-                return "I will give you token"
+                data = {
+                "username": username
+                }
+                return jsonify(data), 200
             else:
                 print("the topt code is wrong",returncode,code)
-                return {"error": "the topt code is wrong"}, 200
+                return {"error": "the topt code is wrong"}, 400
         else:
             print("something wrong with checkin")
-            return {"error": "Something went wrong"}, 500
-    return render_template('auth/login.html')
+            return {"error": "Something went wrong"}, 400
 
 if __name__ == '__main__':
     app.run(debug=True)
