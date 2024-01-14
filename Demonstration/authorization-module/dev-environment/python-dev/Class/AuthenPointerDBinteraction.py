@@ -77,3 +77,19 @@ class AuthPointerManager:
             except OperationalError as e:
                 print(e)
                 AuthPointerManager.retries += 1
+
+    def get_username_by_uuid(self, uuid):
+        while AuthPointerManager.retries < AuthPointerManager.max_retries:
+            try:
+                session = self.connect()
+                try:
+                    user = session.query(AuthPointerTable).filter(AuthPointerTable.uuid == uuid).first()
+                    username = user.username if user else None
+                    session.close()
+                    return username
+                except NoResultFound:
+                    session.close()
+                    return None
+            except OperationalError as e:
+                print(e)
+                AuthPointerManager.retries += 1
