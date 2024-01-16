@@ -32,7 +32,6 @@ class DynamicTokenOperation():
             uuid=interactDBStage.get_uuid_by_token(signToken)
             if payload == False:
                 print("token fully expired")
-                
                 DynamicTokenOperation.UpdateNullToken(uuid)
                 return False
             if payload != None:

@@ -92,7 +92,13 @@ def get_current_user():
                             custom_log.append(username_from_server)
                             return render_template('authentication/user.html', username=username_from_server)
                         else:
-                            custom_log.append(response)
+                            data = response.json()
+                            flag = data.get('isExpired')
+                            if flag:
+                                response = make_response('Token is fully expired')
+                                response.set_cookie('token', value='NULL', expires = 0)
+                                return response
+
                             return response, 400
                     except requests.exceptions.RequestException as e:
                         custom_log.append('Error in making the request:')

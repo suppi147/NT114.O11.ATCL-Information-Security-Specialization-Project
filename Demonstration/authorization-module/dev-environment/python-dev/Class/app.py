@@ -51,30 +51,14 @@ def test_post():
         return jsonify(token_data),200
     else:
         return 'This route only accepts POST requests.'
-
-@app.route('/renew', methods=['GET'])
-def renew():
-    tokenRenew = DynamicTokenOperation() 
-    cookie_header = request.headers.get('Cookie')
-    if cookie_header:
-        cookies = cookie_header.split('; ')
-        for cookie in cookies:
-            if 'token=' in cookie:
-                token = cookie.split('token=')[1]
-                print(f'Token: {token}')
-                time = datetime.utcnow() + timedelta(minutes=TIMEOUT)
-                action = tokenRenew.CheckValidToken(token,time)
-                response = None
-                if action == False:
-                    response = make_response('Token is fully expired')
-                    response.set_cookie('token', value='NULL', expires = 0)
-                elif action != None:
-                    response = make_response('Token is renew')
-                    response.set_cookie('token', value=action)
-                else:
-                    return "something wrong"
-            return response
-    return "hi"
+"""
+def renewToken(user_id):
+    tokenRenew = TokenManager()
+    retrieveToken = tokenRenew.get_token_by_uuid(user_id)
+    time = datetime.utcnow() + timedelta(minutes=TIMEOUT)
+    action = tokenRenew.CheckValidToken(retrieveToken,time)
+    return action
+"""
 @app.route('/getusername', methods=['POST'])
 def getusername():
     tokenRenew = DynamicTokenOperation()
@@ -85,7 +69,8 @@ def getusername():
         
         if action == False:
             print('author:Token is fully expired')
-            return "Token is fully expired", 400
+            data = {"isExpired":True}
+            return jsonify(data), 400
         elif action != None:
             token_parts = token.split('.')
             token_without_tag = token_parts[0]+"."+token_parts[1]+"."
