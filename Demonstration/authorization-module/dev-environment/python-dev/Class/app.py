@@ -19,17 +19,13 @@ def CraftToken(userID_POST):
     payload_data["auth-service"] = authPointerManager.get_services_by_uuid(userID_POST)
     time = datetime.utcnow() + timedelta(minutes=TIMEOUT)
     signToken = signatureStage.Sign(payload_data,time)
-    if not interactDBStage.token_exists(signToken) and not interactDBStage.uuid_exists(userID_POST):
-            interactDBStage.insert_token(signToken,userID_POST)
-            return "done create"
+    if interactDBStage.uuid_exists(userID_POST):
+        interactDBStage.update_token(userID_POST,signToken)
+        return "done update"
     else:
-        if interactDBStage.uuid_exists(userID_POST):
-            interactDBStage.update_token(userID_POST,signToken)
-            return "done update"
-        else:
-            print("uuid not exist")
-            return "somthing wrong"
-
+         interactDBStage.insert_token(signToken,userID_POST)
+         return "done create"
+    
     
 
 app = Flask(__name__)

@@ -5,6 +5,8 @@ import requests
 app = Flask(__name__)
 authen_url = 'http://authen-service:8008/'
 author_url = 'http://authorization-service:8008/'
+epochservice_url = 'http://epoch-service:8008/get_epoch_time'
+quoteservice_url = 'http://quote-service:8008/random_quote'
 max_retries=100
 
 custom_log = []
@@ -112,5 +114,24 @@ def get_current_user():
 def view_log():
     return custom_log,200
                 
+@app.route('/EpochService', methods=['GET'])
+def returnEpoch():
+    for attempt in range(1, max_retries + 1):
+        try:
+            response = requests.get(epochservice_url)
+            return response.json(), 200
+        except requests.exceptions.RequestException as e:
+            print('Error in making the request:', e)
+
+@app.route('/QuoteService', methods=['GET'])
+def returnQuote():
+    for attempt in range(1, max_retries + 1):
+        try:
+            response = requests.get(quoteservice_url)
+            return response.json(), 200
+        except requests.exceptions.RequestException as e:
+            print('Error in making the request:', e)
+
+
 if __name__ == '__main__':
     app.run(debug=True)
