@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login Form</title>
+</head>
+<body>
+  <h2>Login</h2>
+  <form id="loginForm">
+    <label for="username">Username:</label>
+    <input type="text" id="username" name="username" required>
+
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password" required>
+
+    <label for="otp">OTP:</label>
+    <input type="text" id="otp" name="otp" required>
+
+    <button type="button" onclick="loadAndSubmit()">Login</button>
+
+    <div id="successContainer" style="color: green;"></div>
+    <div id="errorContainer" style="color: red;"></div>
+    <div id="dataContainer" style="color: blue;"></div>
+  </form>
+
+  <script>
+    function loadAndSubmit() {
+        // Load FingerprintJS
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/npm/@fingerprintjs/fingerprintjs@3/dist/fp.min.js';
+        script.onload = function test() {
+            // Use FingerprintJS
+            FingerprintJS.load().then(fp => {
+                fp.get().then(result => {
+                    // Log the fingerprint to the console
+                    const visitorId = result.visitorId;
+                    submitForm(visitorId);
+                    // alert(visitorId);  // Hiển thị giá trị visitorId trong alert
+                });
+            });
+        };
+        document.head.appendChild(script);
+    }
+
+    function submitForm(fingerprint) {
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      const otp = document.getElementById('otp').value;
+      const browser_key = String(fingerprint);
+      const loginData = {
+        "username": username,
+        "password": password,
+        "otp": otp,
+        "fingerprint" : browser_key
+      };
+      fetch('https://token.noteziee.cloud/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(loginData)
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log('Server Response:', data);
+
+        // Xử lý thông báo thành công
+        if (data.message) {
+          document.getElementById('dataContainer').innerText = data.message;
+          // window.location.href = 'https://token.noteziee.cloud/user';
+        }
+
+        // Xử lý lỗi từ server và hiển thị trong div errorContainer
+        if (data.error) {
+          document.getElementById('errorContainer').innerText = data.error;
+        }
+
+        // Xử lý dữ liệu từ server và hiển thị trong div dataContainer
+        if (data.data) {
+          document.getElementById('successContainer').innerText = JSON.stringify(data.data);
+          window.location.href = 'https://token.noteziee.cloud/user';
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+    }
+  </script>
+</body>
+</html>

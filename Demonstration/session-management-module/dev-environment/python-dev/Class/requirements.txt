@@ -1,0 +1,8 @@
+Flask
+pyjwt
+cryptography
+sqlalchemy
+mysqlclient
+mysql-connector-python
+flask_cors
+requests

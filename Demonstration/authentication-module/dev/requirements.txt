@@ -1,0 +1,8 @@
+flask
+pyotp
+cryptography
+pycryptodome
+pycrypto
+sqlalchemy
+mysqlclient
+mysql-connector-python

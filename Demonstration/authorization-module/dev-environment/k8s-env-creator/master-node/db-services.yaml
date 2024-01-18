@@ -1,0 +1,144 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: authorization-db-service
+  namespace: dev
+  labels:
+    app: authorization
+spec:
+  ports:
+    - port: 3306
+      targetPort: 3306
+  selector:
+    app: authorization
+  type: ClusterIP
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: authorization-db-config
+  namespace: dev
+data:
+  MYSQL_ALLOW_EMPTY_PASSWORD: "1"
+  MYSQL_DATABASE: AuthorizationDB
+  MYSQL_USER: authorization-manager
+  AUTHEN_MYSQL_DATABASE: AuthenServiceDB
+  AUTHEN_MYSQL_USER: authen-manager
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: authorization-sc
+  namespace: dev
+provisioner: k8s.io/hostpath
+volumeBindingMode: WaitForFirstConsumer
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: authorization-pv-volume
+  namespace: dev
+  labels:
+    type: local
+spec:
+  storageClassName: authorization-sc
+  capacity:
+    storage: 50Mi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/mnt/authorization-sql-init"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: authorization-pv-claim
+  namespace: dev
+spec:
+  storageClassName: authorization-sc
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Mi
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: authorization-db-sc
+  namespace: dev
+provisioner: k8s.io/hostpath
+volumeBindingMode: WaitForFirstConsumer
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: authorization-db-pv-volume
+  namespace: dev
+  labels:
+    type: local
+spec:
+  storageClassName: authorization-db-sc
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/mnt/authorization-storage"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: authorization-db-pv-claim
+  namespace: dev
+spec:
+  storageClassName: authorization-db-sc
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 3Gi      
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: authorization-db-deployment
+  namespace: dev
+  labels:
+    app: authorization
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: authorization
+  template:
+    metadata:
+      labels:
+        app: authorization
+    spec:
+      containers:
+        - name: authorization
+          image: mysql:latest
+          env:
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: authorization-db-password
+                  key: MYSQL_PASSWORD
+          envFrom:
+            - configMapRef:
+                name: authorization-db-config
+          ports:
+            - containerPort: 3306
+          volumeMounts:
+            - name: authorization-persistent-storage
+              mountPath: "/docker-entrypoint-initdb.d"
+            - name: authorization-db-persistent-storage
+              mountPath: "/var/lib/mysql"
+      volumes:
+        - name: authorization-persistent-storage
+          persistentVolumeClaim:
+            claimName: authorization-pv-claim
+        - name: authorization-db-persistent-storage
+          persistentVolumeClaim:
+            claimName: authorization-db-pv-claim

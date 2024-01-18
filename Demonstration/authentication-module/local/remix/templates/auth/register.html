@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Registration</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 400px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 12px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #4caf50;
+            color: #fff;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .message,
+        .error,
+        .data,
+        .secret-key {
+            margin-top: 12px;
+            font-weight: bold;
+        }
+
+        .message {
+            color: green;
+        }
+
+        .error {
+            color: red;
+        }
+
+        .data {
+            color: blue;
+        }
+
+        .secret-key {
+            color: green;
+        }
+
+        /* Style added for the wrapper div */
+        .services-wrapper {
+            margin-bottom: 12px;
+        }
+
+        /* Style added for better alignment of checkboxes and labels */
+        .service-checkbox {
+            display: inline-block;
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>User Registration</h2>
+        <form id="registerForm">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
+
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+
+            <label for="confirmPassword">Re-enter Password:</label>
+            <input type="password" id="confirmPassword" name="confirmPassword" required>
+
+            <div class="services-wrapper">
+                <label>Services:</label>
+                <input type="checkbox" id="QuoteService" name="services" value="QuoteService" class="service-checkbox">
+                <label for="QuoteService">Quote Service</label>
+
+                <input type="checkbox" id="EpochService" name="services" value="EpochService" class="service-checkbox">
+                <label for="EpochService">Epoch Service</label>
+            </div>
+
+            <button type="button" onclick="submitForm()">Register</button>
+
+            <div id="messageContainer" class="message"></div>
+            <div id="errorContainer" class="error"></div>
+            <div id="dataContainer" class="data"></div>
+            <div id="secretKeyContainer" class="secret-key"></div>
+            <div id="redirectLinkContainer"></div>
+        </form>
+    </div>
+
+    <script>
+        function submitForm() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const QuoteService = document.getElementById('QuoteService').checked;
+            const EpochService = document.getElementById('EpochService').checked;
+
+            // Check if passwords match
+            if (password !== confirmPassword) {
+                const errorContainer = document.getElementById('errorContainer');
+                errorContainer.innerText = "Error: Passwords do not match";
+                errorContainer.style.color = 'red';
+                return;
+            }
+
+            const selectedServices = [];
+
+            if (QuoteService) {
+                selectedServices.push("QuoteService");
+            }
+
+            if (EpochService) {
+                selectedServices.push("EpochService");
+            }
+
+            const registerData = {
+                "username": username,
+                "password": password,
+                "services": selectedServices
+            };
+
+            fetch('http://127.0.0.1:5000/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(registerData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Server Response:', data);
+
+                const messageContainer = document.getElementById('messageContainer');
+                messageContainer.innerText = "Message: " + data.message;
+                messageContainer.style.color = data.error ? 'red' : 'green';
+
+                const secretKeyContainer = document.getElementById('secretKeyContainer');
+                secretKeyContainer.innerText = "Secret Key: " + data.secret_key;
+
+                // Create and append the redirect button
+                const redirectLinkContainer = document.getElementById('redirectLinkContainer');
+                const redirectLink = document.createElement('a');
+                redirectLink.href = 'http://127.0.0.1:5000/login';
+                redirectLink.className = 'redirect-link';
+                redirectLink.innerText = 'Go to Login';
+                redirectLinkContainer.innerHTML = ''; // Clear existing content
+                redirectLinkContainer.appendChild(redirectLink);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
+</body>
+</html>

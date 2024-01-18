@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: epoch-service
+  namespace: dev
+  labels:
+    app: epoch-service
+spec:
+  ports:
+    - port: 8008
+      targetPort: 80
+  selector:
+    app: epoch-service
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: epoch-service-deployment
+  namespace: dev
+  labels:
+    app: epoch-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: epoch-service
+  template:
+    metadata:
+      labels:
+        app: epoch-service
+    spec:
+      containers:
+      - image: suppi147/epoch-service
+        name: epoch-service      
+        ports:
+        - containerPort: 80

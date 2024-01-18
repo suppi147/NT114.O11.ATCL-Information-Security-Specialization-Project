@@ -1,0 +1,56 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: authorization-service
+  namespace: dev
+  labels:
+    app: authorization
+spec:
+  ports:
+    - port: 8008
+      targetPort: 80
+  selector:
+    app: authorization
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: authorization-deployment
+  namespace: dev
+  labels:
+    app: authorization
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: authorization
+  template:
+    metadata:
+      labels:
+        app: authorization
+    spec:
+      containers:
+      - image: suppi147/authorization
+        name: authorization
+        env:
+          - name: MYSQL_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: authorization-db-password
+                key: MYSQL_PASSWORD
+          - name: CRYPTO_KEY
+            valueFrom:
+              secretKeyRef:
+                name: authorization-crypto-key
+                key: CRYPTO_KEY
+          - name: SIGN_KEY
+            valueFrom:
+              secretKeyRef:
+                name: authorization-sign-key
+                key: SIGN_KEY
+        envFrom:
+          - configMapRef:
+              name: authorization-db-config        
+        ports:
+        - containerPort: 80

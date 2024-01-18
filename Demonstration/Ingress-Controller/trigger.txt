@@ -1,0 +1,1 @@
+kubectl create secret tls token.noteziee.cloud --cert=./tls-k.crt --key=./tls-k.key -n dev

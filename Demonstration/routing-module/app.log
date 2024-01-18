@@ -1,0 +1,179 @@
+INFO:werkzeug:[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+INFO:werkzeug:[33mPress CTRL+C to quit[0m
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 416-529-768
+INFO:test:Processing request for the home route
+INFO:werkzeug:127.0.0.1 - - [14/Jan/2024 15:20:02] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [14/Jan/2024 15:20:02] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+INFO:werkzeug: * Detected change in 'D:\\Github\\NT114.O11.ATCL-Information-Security-Specialization-Project\\Demonstration\\routing-module\\dev\\app.py', reloading
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 416-529-768
+INFO:werkzeug: * Detected change in 'D:\\Github\\NT114.O11.ATCL-Information-Security-Specialization-Project\\Demonstration\\routing-module\\dev\\app.py', reloading
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 416-529-768
+INFO:werkzeug: * Detected change in 'D:\\Github\\NT114.O11.ATCL-Information-Security-Specialization-Project\\Demonstration\\routing-module\\dev\\app.py', reloading
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 416-529-768
+INFO:werkzeug: * Detected change in 'D:\\Github\\NT114.O11.ATCL-Information-Security-Specialization-Project\\Demonstration\\routing-module\\dev\\app.py', reloading
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 416-529-768
+INFO:werkzeug: * Detected change in 'D:\\Github\\NT114.O11.ATCL-Information-Security-Specialization-Project\\Demonstration\\routing-module\\dev\\app.py', reloading
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 416-529-768
+INFO:werkzeug: * Detected change in 'D:\\Github\\NT114.O11.ATCL-Information-Security-Specialization-Project\\Demonstration\\routing-module\\dev\\app.py', reloading
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 416-529-768
+INFO:werkzeug: * Detected change in 'D:\\Github\\NT114.O11.ATCL-Information-Security-Specialization-Project\\Demonstration\\routing-module\\dev\\app.py', reloading
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 416-529-768
+INFO:werkzeug: * Detected change in 'D:\\Github\\NT114.O11.ATCL-Information-Security-Specialization-Project\\Demonstration\\routing-module\\dev\\app.py', reloading
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 416-529-768
+INFO:werkzeug: * Detected change in 'D:\\Github\\NT114.O11.ATCL-Information-Security-Specialization-Project\\Demonstration\\routing-module\\dev\\app.py', reloading
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 416-529-768
+INFO:werkzeug: * Detected change in 'D:\\Github\\NT114.O11.ATCL-Information-Security-Specialization-Project\\Demonstration\\routing-module\\dev\\app.py', reloading
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 416-529-768
+INFO:werkzeug: * Detected change in 'D:\\Github\\NT114.O11.ATCL-Information-Security-Specialization-Project\\Demonstration\\routing-module\\dev\\app.py', reloading
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 416-529-768
+INFO:werkzeug: * Detected change in 'D:\\Github\\NT114.O11.ATCL-Information-Security-Specialization-Project\\Demonstration\\routing-module\\dev\\app.py', reloading
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 416-529-768
+INFO:werkzeug: * Detected change in 'D:\\Github\\NT114.O11.ATCL-Information-Security-Specialization-Project\\Demonstration\\routing-module\\dev\\app.py', reloading
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 416-529-768
+INFO:werkzeug: * Detected change in 'D:\\Github\\NT114.O11.ATCL-Information-Security-Specialization-Project\\Demonstration\\routing-module\\dev\\app.py', reloading
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 416-529-768
+INFO:werkzeug: * Detected change in 'D:\\Github\\NT114.O11.ATCL-Information-Security-Specialization-Project\\Demonstration\\routing-module\\dev\\app.py', reloading
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 416-529-768
+INFO:werkzeug: * Detected change in 'D:\\Github\\NT114.O11.ATCL-Information-Security-Specialization-Project\\Demonstration\\routing-module\\dev\\app.py', reloading
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 416-529-768
+INFO:werkzeug: * Detected change in 'D:\\Github\\NT114.O11.ATCL-Information-Security-Specialization-Project\\Demonstration\\routing-module\\dev\\app.py', reloading
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 416-529-768
+INFO:werkzeug: * Detected change in 'D:\\Github\\NT114.O11.ATCL-Information-Security-Specialization-Project\\Demonstration\\routing-module\\dev\\app.py', reloading
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 416-529-768
+INFO:werkzeug: * Detected change in 'D:\\Github\\NT114.O11.ATCL-Information-Security-Specialization-Project\\Demonstration\\routing-module\\dev\\app.py', reloading
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 416-529-768
+INFO:werkzeug: * Detected change in 'D:\\Github\\NT114.O11.ATCL-Information-Security-Specialization-Project\\Demonstration\\routing-module\\dev\\app.py', reloading
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 416-529-768
+INFO:werkzeug: * Detected change in 'D:\\Github\\NT114.O11.ATCL-Information-Security-Specialization-Project\\Demonstration\\routing-module\\dev\\app.py', reloading
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 416-529-768
+INFO:werkzeug: * Detected change in 'D:\\Github\\NT114.O11.ATCL-Information-Security-Specialization-Project\\Demonstration\\routing-module\\dev\\app.py', reloading
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 416-529-768
+INFO:werkzeug: * Detected change in 'D:\\Github\\NT114.O11.ATCL-Information-Security-Specialization-Project\\Demonstration\\routing-module\\dev\\app.py', reloading
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 416-529-768
+INFO:werkzeug: * Detected change in 'D:\\Github\\NT114.O11.ATCL-Information-Security-Specialization-Project\\Demonstration\\routing-module\\dev\\app.py', reloading
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 416-529-768
+INFO:werkzeug: * Detected change in 'D:\\Github\\NT114.O11.ATCL-Information-Security-Specialization-Project\\Demonstration\\routing-module\\dev\\app.py', reloading
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 416-529-768
+INFO:werkzeug: * Detected change in 'D:\\Github\\NT114.O11.ATCL-Information-Security-Specialization-Project\\Demonstration\\routing-module\\dev\\app.py', reloading
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 416-529-768
+INFO:werkzeug: * Detected change in 'D:\\Github\\NT114.O11.ATCL-Information-Security-Specialization-Project\\Demonstration\\routing-module\\dev\\app.py', reloading
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 416-529-768
+INFO:werkzeug: * Detected change in 'D:\\Github\\NT114.O11.ATCL-Information-Security-Specialization-Project\\Demonstration\\routing-module\\dev\\app.py', reloading
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 416-529-768
+INFO:werkzeug: * Detected change in 'D:\\Github\\NT114.O11.ATCL-Information-Security-Specialization-Project\\Demonstration\\routing-module\\dev\\app.py', reloading
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 416-529-768
+INFO:werkzeug: * Detected change in 'D:\\Github\\NT114.O11.ATCL-Information-Security-Specialization-Project\\Demonstration\\routing-module\\dev\\app.py', reloading
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 416-529-768
+INFO:werkzeug: * Detected change in 'D:\\Github\\NT114.O11.ATCL-Information-Security-Specialization-Project\\Demonstration\\routing-module\\dev\\app.py', reloading
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 416-529-768
+INFO:werkzeug: * Detected change in 'D:\\Github\\NT114.O11.ATCL-Information-Security-Specialization-Project\\Demonstration\\routing-module\\dev\\app.py', reloading
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 416-529-768
+INFO:werkzeug: * Detected change in 'D:\\Github\\NT114.O11.ATCL-Information-Security-Specialization-Project\\Demonstration\\routing-module\\dev\\app.py', reloading
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 416-529-768
+INFO:werkzeug: * Detected change in 'D:\\Github\\NT114.O11.ATCL-Information-Security-Specialization-Project\\Demonstration\\routing-module\\dev\\app.py', reloading
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 416-529-768
+INFO:werkzeug: * Detected change in 'D:\\Github\\NT114.O11.ATCL-Information-Security-Specialization-Project\\Demonstration\\routing-module\\dev\\app.py', reloading
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 416-529-768
+INFO:werkzeug: * Detected change in 'D:\\Github\\NT114.O11.ATCL-Information-Security-Specialization-Project\\Demonstration\\routing-module\\dev\\app.py', reloading
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 416-529-768
+INFO:werkzeug: * Detected change in 'D:\\Github\\NT114.O11.ATCL-Information-Security-Specialization-Project\\Demonstration\\routing-module\\dev\\app.py', reloading
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 416-529-768
+INFO:werkzeug: * Detected change in 'D:\\Github\\NT114.O11.ATCL-Information-Security-Specialization-Project\\Demonstration\\routing-module\\dev\\app.py', reloading
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 416-529-768
+INFO:werkzeug: * Detected change in 'D:\\Github\\NT114.O11.ATCL-Information-Security-Specialization-Project\\Demonstration\\routing-module\\dev\\app.py', reloading
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 416-529-768
+INFO:werkzeug: * Detected change in 'D:\\Github\\NT114.O11.ATCL-Information-Security-Specialization-Project\\Demonstration\\routing-module\\dev\\app.py', reloading
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 416-529-768
+INFO:werkzeug: * Detected change in 'D:\\Github\\NT114.O11.ATCL-Information-Security-Specialization-Project\\Demonstration\\routing-module\\dev\\app.py', reloading
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 416-529-768
+INFO:werkzeug: * Detected change in 'D:\\Github\\NT114.O11.ATCL-Information-Security-Specialization-Project\\Demonstration\\routing-module\\dev\\app.py', reloading
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 416-529-768
+INFO:werkzeug: * Detected change in 'D:\\Github\\NT114.O11.ATCL-Information-Security-Specialization-Project\\Demonstration\\routing-module\\test.py', reloading
+INFO:werkzeug: * Restarting with stat
