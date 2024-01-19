@@ -18,7 +18,7 @@ def CraftToken(userID_POST):
     payload_data["fingerprint"] = authPointerManager.get_fingerprint_by_uuid(userID_POST)
     payload_data["auth-service"] = authPointerManager.get_services_by_uuid(userID_POST)
     time = datetime.utcnow() + timedelta(minutes=TIMEOUT)
-    signToken = signatureStage.Sign(payload_data,time)
+    signToken = signatureStage.Sign(payload_data)
     if interactDBStage.uuid_exists(userID_POST):
         interactDBStage.update_token(userID_POST,signToken)
         return "done update"
@@ -47,14 +47,7 @@ def test_post():
         return jsonify(token_data),200
     else:
         return 'This route only accepts POST requests.'
-"""
-def renewToken(user_id):
-    tokenRenew = TokenManager()
-    retrieveToken = tokenRenew.get_token_by_uuid(user_id)
-    time = datetime.utcnow() + timedelta(minutes=TIMEOUT)
-    action = tokenRenew.CheckValidToken(retrieveToken,time)
-    return action
-"""
+
 @app.route('/getusername', methods=['POST'])
 def getusername():
     tokenRenew = DynamicTokenOperation()
@@ -78,6 +71,40 @@ def getusername():
             return jsonify(data), 200
         else:
             return "something wrong",400
+
+@app.route('/check', methods=['POST'])
+def check():
+    tokenRenew = DynamicTokenOperation()
+    getFromAuth = AuthPointerManager()
+    if request.method == 'POST':
+        data = request.json
+        token = data.get('token')
+        requestService = data.get('service')
+        action = tokenRenew.CheckValidTokenForUsername(token)
+        if action == False:
+            returnData = {"token":None,"access":False}
+        else:
+            token_parts = action.split('.')
+            token_without_tag = token_parts[0]+"."+token_parts[1]+"."
+            payload_data = jwt.decode(token_without_tag, options={"verify_signature": False})
+            fingerprint = payload_data.get('fingerprint')
+            uuid = payload_data.get('user_id')
+            allow_service = payload_data.get('auth-service')
+
+            compareFingerprint = getFromAuth.get_fingerprint_by_uuid(uuid)
+            if compareFingerprint != fingerprint:
+                returnData = {"token":None,"access":False}
+            
+            input_string = allow_service
+            services = input_string.split('_')
+            services = [service for service in services if service]
+            for service in services:
+                if requestService == service:
+                    returnData = {"token":action,"access":True}
+                    return jsonify(returnData), 200
+            returnData = {"token":action,"access":False}
+            return jsonify(returnData), 200
+
 
 
 @app.route('/log', methods=['GET'])

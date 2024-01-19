@@ -5,7 +5,7 @@ import hmac
 import base64
 import os
 from datetime import datetime, timedelta
-
+TIME_OUT=2
 
 class SignOperation():
     secret = None
@@ -20,8 +20,8 @@ class SignOperation():
         print("Sign secret has been retreived.")
     
     
-    def Sign(self,payload_data,time):
-        payload_data["exp"] = time
+    def Sign(self,payload_data):
+        payload_data["exp"] = datetime.utcnow() + timedelta(minutes=TIME_OUT) 
         self.GetSecretFromTPM()
         if SignOperation.secret == None:
             print("!!! Sign secret has not been assigned.")

@@ -116,21 +116,85 @@ def view_log():
                 
 @app.route('/EpochService', methods=['GET'])
 def returnEpoch():
-    for attempt in range(1, max_retries + 1):
-        try:
-            response = requests.get(epochservice_url)
-            return response.json(), 200
-        except requests.exceptions.RequestException as e:
-            print('Error in making the request:', e)
+    cookie_header = request.headers.get('Cookie')
+    if cookie_header:
+        cookies = cookie_header.split('; ')
+        for cookie in cookies:
+            if 'token=' in cookie:
+                token = cookie.split('token=')[1]
+                author_check_url= author_url + "check"
+                accessService = {"access":False}
+                for attempt in range(1, max_retries + 1):
+                    try:
+                        data ={"token":token,"service":":EpochService"}
+                        response = requests.post(author_check_url,json=data)
+                        accessService = response.json()
+                    except requests.exceptions.RequestException as e:
+                        print('Error in making the request:', e)
+                    if accessService.get('access') == True:
+                        for attempt in range(1, max_retries + 1):
+                            try:
+                                response = requests.get(epochservice_url)
+                                data = response.json()
+                                response_data = data
+                            except requests.exceptions.RequestException as e:
+                                print('Error in making the request:', e)
+                    else:
+                        response_data = {"message": "Access Denied"}
+                    response = make_response(jsonify(response_data), 200)
+                    if accessService.get('token') == None or accessService.get('isExpired'):
+                        response = make_response('Token is fully expired')
+                        response.set_cookie('token', value='NULL', expires = 0)
+                    else:
+                        response.set_cookie('token', value=accessService.get('token'))
+                    return response, 200
+            else:
+                custom_log.append('token cant be delivered')
+                return redirect('https://token.noteziee.cloud/login')
+    else:
+        custom_log.append('token cant be delivered')
+        return redirect('https://token.noteziee.cloud/login')
 
 @app.route('/QuoteService', methods=['GET'])
 def returnQuote():
-    for attempt in range(1, max_retries + 1):
-        try:
-            response = requests.get(quoteservice_url)
-            return response.json(), 200
-        except requests.exceptions.RequestException as e:
-            print('Error in making the request:', e)
+    cookie_header = request.headers.get('Cookie')
+    if cookie_header:
+        cookies = cookie_header.split('; ')
+        for cookie in cookies:
+            if 'token=' in cookie:
+                token = cookie.split('token=')[1]
+                author_check_url= author_url + "check"
+                accessService = {"access":False}
+                for attempt in range(1, max_retries + 1):
+                    try:
+                        data ={"token":token,"service":":EpochService"}
+                        response = requests.post(author_check_url,json=data)
+                        accessService = response.json()
+                    except requests.exceptions.RequestException as e:
+                        print('Error in making the request:', e)
+                    if accessService.get('access') == True:
+                        for attempt in range(1, max_retries + 1):
+                            try:
+                                response = requests.get(quoteservice_url)
+                                data = response.json()
+                                response_data = data
+                            except requests.exceptions.RequestException as e:
+                                print('Error in making the request:', e)
+                    else:
+                        response_data = {"message": "Access Denied"}
+                    response = make_response(jsonify(response_data), 200)
+                    if accessService.get('token') == None or accessService.get('isExpired'):
+                        response = make_response('Token is fully expired')
+                        response.set_cookie('token', value='NULL', expires = 0)
+                    else:
+                        response.set_cookie('token', value=accessService.get('token'))
+                    return response, 200
+            else:
+                custom_log.append('token cant be delivered')
+                return redirect('https://token.noteziee.cloud/login')
+    else:
+        custom_log.append('token cant be delivered')
+        return redirect('https://token.noteziee.cloud/login')
 
 
 if __name__ == '__main__':
