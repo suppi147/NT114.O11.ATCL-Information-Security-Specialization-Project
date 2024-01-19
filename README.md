@@ -7,8 +7,6 @@
 ## Project details
 ### Description
 - Authentication, Authorization, and Session management in API gateways for applications in Cloud environment is a security major specialization project that builds and deploys a cloud-native system with the application of security standards in authentication, authorization, and session management.
-### Model
-- Overall model
 
 ### Technologies used
 - Container Orchestration: Kubernetes. 
