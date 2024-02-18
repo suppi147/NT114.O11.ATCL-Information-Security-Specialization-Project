@@ -1,7 +1,7 @@
 from SignOperation import SignOperation
 from DBinteraction import TokenManager
 from datetime import datetime, timedelta
-
+from log import Logger
 
 class DynamicTokenOperation():
     secret = None
@@ -23,23 +23,22 @@ class DynamicTokenOperation():
         
         
     def CheckValidTokenForUsername(self,signToken):
+        logger = Logger("author_log.txt")        
         interactDBStage = TokenManager()
         signatureStage = SignOperation()
 
         if interactDBStage.token_exists(signToken):
-            print("token exist in DB")
             payload = signatureStage.CheckSignature(signToken)
             uuid=interactDBStage.get_uuid_by_token(signToken)
             if payload == False:
-                print("token fully expired")
+                logger.log(f"|authorization-module|DynamicTokenOperation.py|CheckValidTokenForUsername()|token is expired enter NULL uuid:{uuid}|")
                 DynamicTokenOperation.UpdateNullToken(uuid)
                 return False
             if payload != None:
                 return True
             else:
-                print("token tag failed")
+                logger.log(f"|authorization-module|DynamicTokenOperation.py|CheckValidTokenForUsername()|something goes wrong with the token|")
                 return None
-
         else:
             print("token not exist")
             return None

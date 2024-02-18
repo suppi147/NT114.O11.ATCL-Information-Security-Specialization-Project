@@ -1,7 +1,6 @@
 FROM python:3.8-slim
 
-RUN apt-get update \
-    && apt-get install -y pkg-config default-libmysqlclient-dev build-essential
+RUN apt-get update && apt-get install -y pkg-config default-libmysqlclient-dev build-essential
 RUN apt-get install -y libmariadb-dev
 
 WORKDIR /app

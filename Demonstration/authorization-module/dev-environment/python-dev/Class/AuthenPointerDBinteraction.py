@@ -2,6 +2,7 @@ from sqlalchemy import create_engine, Column, Integer, Text, CHAR, text, exists
 from sqlalchemy.orm import sessionmaker, declarative_base
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.exc import OperationalError
+from log import Logger
 import os
 
 Base = declarative_base()
@@ -63,6 +64,7 @@ class AuthPointerManager:
                 AuthPointerManager.retries += 1
 
     def get_uuid_by_username(self, username):
+        logger = Logger("author_log.txt")
         while AuthPointerManager.retries < AuthPointerManager.max_retries:
             try:
                 session = self.connect()
@@ -70,12 +72,16 @@ class AuthPointerManager:
                     user = session.query(AuthPointerTable).filter(AuthPointerTable.username == username).first()
                     uuid = user.uuid if user else None
                     session.close()
+                    logger.log(f"|authorization-module|AuthenPointerDBinteraction.py|get_uuid_by_username(self, username)|connect to database: {AuthPointerTable.mysql_database} success|")
+                    logger.log(f"|authorization-module|AuthenPointerDBinteraction.py|get_uuid_by_username(self, username)|UUID:{user.uuid} exist with username:{username}|")
                     return uuid
                 except NoResultFound:
                     session.close()
+                    logger.log(f"|authorization-module|AuthenPointerDBinteraction.py|get_uuid_by_username(self, username)|connect to database: {AuthPointerTable.mysql_database} success|")
+                    logger.log(f"|authorization-module|AuthenPointerDBinteraction.py|get_uuid_by_username(self, username)|UUID NOT exist with username:{username}|")
                     return None
             except OperationalError as e:
-                print(e)
+                logger.log(f"|authorization-module|AuthenPointerDBinteraction.py|get_uuid_by_username(self, username)|{e}|")
                 AuthPointerManager.retries += 1
 
     def get_username_by_uuid(self, uuid):

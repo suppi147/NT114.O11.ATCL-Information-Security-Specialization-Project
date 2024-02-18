@@ -48,8 +48,13 @@ spec:
           - name: MYSQL_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: session-management-db-password
+                name: authorization-db-password
                 key: MYSQL_PASSWORD
+          - name: SIGN_KEY
+            valueFrom:
+              secretKeyRef:
+                name: authorization-sign-key
+                key: SIGN_KEY
         envFrom:
           - configMapRef:
               name: session-management-db-config        

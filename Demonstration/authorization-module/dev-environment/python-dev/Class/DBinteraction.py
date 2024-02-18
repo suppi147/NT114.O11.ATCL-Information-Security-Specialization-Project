@@ -3,6 +3,7 @@ from sqlalchemy.orm import sessionmaker, declarative_base
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.exc import OperationalError
 import os
+from log import Logger
 
 Base = declarative_base()
 
@@ -89,11 +90,13 @@ class TokenManager:
                     print(e)
                     TokenManager.retries += 1    
     def token_exists(self, token):
+        logger = Logger("author_log.txt")        
         while TokenManager.retries < TokenManager.max_retries:
             try:
                 session = self.connect()
                 exists_query = session.query(exists().where(TokenTable.token == token)).scalar()
                 session.close()
+                logger.log(f"|authorization-module|DBinteraction.py|CheckValidTokenForUsername()|token {TokenTable.token} exist in database {TokenTable.mysql_database}|")
                 return exists_query
             except OperationalError as e:
                     print(e)

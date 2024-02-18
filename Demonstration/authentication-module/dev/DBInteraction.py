@@ -2,6 +2,7 @@ from sqlalchemy import create_engine, Column, Integer, Text, CHAR, VARCHAR, text
 from sqlalchemy.orm import sessionmaker, declarative_base
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.exc import OperationalError
+from log import Logger
 import os
 
 Base = declarative_base()
@@ -32,47 +33,60 @@ class AuthManager:
         return session
 
     def insert_user(self, uuid, username, password, totpkey, serviceSum):
+        logger = Logger("authen_log.txt")
         while AuthManager.retries < AuthManager.max_retries:
             try:
                 session = self.connect()    
                 new_user = AuthTable(uuid=uuid, username=username, password=password,fingerprint="NULL", totpkey=totpkey, services=serviceSum)
                 session.add(new_user)
                 session.commit()
-                print(f"username '{new_user.username}' with UUID '{new_user.uuid}' with totpkey '{new_user.totpkey}' and service '{new_user.services}' is inserted into the db")
+                logger.log(f"|authentication-module|DBInteraction.py|insert_user(uuid, username, password, totpkey, serviceSum)|connect to database: {AuthTable.mysql_database} success|")
+                logger.log(f"|authentication-module|DBInteraction.py|insert_user(uuid, username, password, totpkey, serviceSum)|UUID: {new_user.uuid}, username: {new_user.username}, password: {new_user.password}, fingerprint: {new_user.fingerprint}, totpkey: {new_user.totpkey}, service: {new_user.services} is inserted into database: {AuthTable.mysql_database}|")
                 session.close()
                 break
             except OperationalError as e:
-                    print(e)
+                    logger.log(f"|authentication-module|DBInteraction.py|insert_user(uuid, username, password, totpkey, serviceSum)|{e}|")
                     AuthManager.retries += 1
     def username_exists(self, username):
+        logger = Logger("authen_log.txt")
         while AuthManager.retries < AuthManager.max_retries:
             try:
                 try:
                     session = self.connect()
                     user = session.query(AuthTable).filter(AuthTable.username == username).one()
                     session.close()
+                    logger.log(f"|authentication-module|DBInteraction.py|username_exists(username)|connect to database: {AuthTable.mysql_database} success|")
+                    logger.log(f"|authentication-module|DBInteraction.py|username_exists(username)|username:{username} exist in database: {AuthTable.mysql_database}|")
                     return True
                 except NoResultFound:
                     session.close()
+                    logger.log(f"|authentication-module|DBInteraction.py|username_exists(username)|connect to database: {AuthTable.mysql_database} success|")
+                    logger.log(f"|authentication-module|DBInteraction.py|username_exists(username)|username:{username} NOT exist in database: {AuthTable.mysql_database}|")
                     return False
             except OperationalError as e:
-                    print(e)
+                    logger.log(f"|authentication-module|DBInteraction.py|username_exists(username)|{e}|")
                     AuthManager.retries += 1
     def check_login(self, username, password):
+        logger = Logger("authen_log.txt")
         while AuthManager.retries < AuthManager.max_retries:
             try:
                 session = self.connect()
                 try:
                     user = session.query(AuthTable).filter(AuthTable.username == username, AuthTable.password == password).one()
                     session.close()
+                    logger.log(f"|authentication-module|DBInteraction.py|check_login(self, username, password)|connect to database: {AuthTable.mysql_database} success|")
+                    logger.log(f"|authentication-module|DBInteraction.py|check_login(self, username, password)|username:{username} and password:{password} login exist|")
                     return True
                 except NoResultFound:
+                    logger.log(f"|authentication-module|DBInteraction.py|check_login(self, username, password)|connect to database: {AuthTable.mysql_database} success|")
+                    logger.log(f"|authentication-module|DBInteraction.py|check_login(self, username, password)|username:{username} and password:{password} NOT correct|")
                     session.close()
                     return False
             except OperationalError as e:
-                print(e)
+                logger.log(f"|authentication-module|DBInteraction.py|check_login(self, username, password)|{e}|")
                 AuthManager.retries += 1
     def get_totpkey_by_username(self, username):
+        logger = Logger("authen_log.txt")
         while AuthManager.retries < AuthManager.max_retries:
             try:
                 session = self.connect()
@@ -80,101 +94,28 @@ class AuthManager:
                     user = session.query(AuthTable).filter(AuthTable.username == username).one()
                     totpkey = user.totpkey
                     session.close()
+                    logger.log(f"|authentication-module|DBInteraction.py|get_totpkey_by_username(self, username)|connect to database: {AuthTable.mysql_database} success|")
+                    logger.log(f"|authentication-module|DBInteraction.py|get_totpkey_by_username(self, username)|update totp: {user.totpkey} for username:{AuthTable.username}|")
                     return totpkey
                 except NoResultFound:
+                    logger.log(f"|authentication-module|DBInteraction.py|get_totpkey_by_username(self, username)|totp by username: {username} NOT found|")
                     session.close()
                     return None
             except OperationalError as e:
-                print(e)
+                logger.log(f"|authentication-module|DBInteraction.py|get_totpkey_by_username(self, username)|{e}|")
                 AuthManager.retries += 1
     def update_fingerprint_by_username(self, username, new_fingerprint):
+        logger = Logger("authen_log.txt")
         while AuthManager.retries < AuthManager.max_retries:
             try:
                 session = self.connect()
+                logger.log(f"|authentication-module|DBInteraction.py|update_fingerprint_by_username(self, username, new_fingerprint)|connect to database: {AuthTable.mysql_database} success|")
                 user = session.query(AuthTable).filter(AuthTable.username == username).one()
                 user.fingerprint = new_fingerprint
                 session.commit()
-                print(f"Fingerprint for username '{user.username}' is updated in the db")
+                logger.log(f"|authentication-module|DBInteraction.py|update_fingerprint_by_username(self, username, new_fingerprint)|Fingerprint:{user.fingerprint} for username '{user.username}' is updated into database: {AuthTable.mysql_database}|")
                 session.close()
                 break
             except OperationalError as e:
-                print(e)
+                logger.log(f"|authentication-module|DBInteraction.py|update_fingerprint_by_username(self, username, new_fingerprint)|{e}|")
                 AuthManager.retries += 1         
-"""
-    def update_token(self, uuid, new_token):
-        while AuthManager.retries < AuthManager.max_retries:
-            try:
-                session = self.connect()    
-                token_entry = session.query(AuthTable).filter_by(uuid=uuid).first()
-                if token_entry:
-                    token_entry.token = new_token
-                    session.commit()
-                    print(f"Token '{token_entry.token}' with UUID '{token_entry.uuid}' is updated into the db")
-                else:
-                    print(f"Token with the UUID '{uuid}' not found. Update failed.")
-                session.close()
-                break
-            except OperationalError as e:
-                    print(e)
-                    AuthManager.retries += 1
-    
-    def get_token_by_uuid(self, uuid):
-        while AuthManager.retries < AuthManager.max_retries:
-            try:
-                session = self.connect()    
-                try:
-                    token_entry = session.query(AuthTable).filter_by(uuid=uuid).first()
-                    token = token_entry.token if token_entry else None
-                except NoResultFound:
-                    token = None
-                finally:
-                    session.close()
-                return token
-            except OperationalError as e:
-                    print(e)
-                    AuthManager.retries += 1
-
-    def get_uuid_by_token(self, token):
-        while AuthManager.retries < AuthManager.max_retries:
-            try:
-                session = self.connect()    
-                try:
-                    uuid_entry = session.query(AuthTable).filter_by(token=token).first()
-                    uuid = uuid_entry.uuid if uuid_entry else None
-                except NoResultFound:
-                    uuid = None
-                finally:
-                    session.close()
-                return uuid
-            except OperationalError as e:
-                    print(e)
-                    AuthManager.retries += 1        
-
-    def token_exists(self, token):
-        while AuthManager.retries < AuthManager.max_retries:
-            try:
-                session = self.connect()
-                exists_query = session.query(exists().where(AuthTable.token == token)).scalar()
-                session.close()
-                return exists_query
-            except OperationalError as e:
-                    print(e)
-                    AuthManager.retries += 1 
-
-
-    def uuid_exists(self, uuid):
-        while AuthManager.retries < AuthManager.max_retries:
-            try:
-                try:
-                    session = self.connect()
-                    result = session.query(AuthTable).filter_by(uuid=uuid).first()
-                    exists = (result is not None)
-                except NoResultFound:
-                    exists = False
-                finally:
-                    session.close()
-                return exists
-            except OperationalError as e:
-                    print(e)
-                    AuthManager.retries += 1 
-"""
