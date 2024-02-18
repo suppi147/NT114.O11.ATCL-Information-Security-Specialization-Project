@@ -44,6 +44,11 @@ def check():
             input_string = allow_service
             services = input_string.split('_')
             services = [service for service in services if service]
+            compareFingerprint = getFromAuth.get_fingerprint_by_uuid(uuid)
+            logger.log(f"|session-management-module|app.py|check()|compareFingerprint: {compareFingerprint} vs fingerprint:{fingerprint}|")
+            if compareFingerprint != fingerprint:
+                returnData = {"token":None,"access":False}
+                return jsonify(returnData), 200
             for service in services:
                 if requestService == service:
                     logger.log(f"|session-management-module|app.py|check()|service allow: {service}|")
@@ -54,15 +59,7 @@ def check():
             logger.log(f"|session-management-module|app.py|check()|No service allow|")
             returnData = {"token":token,"access":False}
         return jsonify(returnData), 200
-        """
-            compareFingerprint = getFromAuth.get_fingerprint_by_uuid(uuid)
-            if compareFingerprint != fingerprint:
-                returnData = {"token":None,"access":False}
-            
-            
 
-            return jsonify(returnData), 200
-        """
 
 if __name__ == '__main__':
     app.run(debug=True)
