@@ -1,0 +1,14 @@
+C:\Users\Admin\source\repos\totp2\totp2\bin\Debug\totp2.exe.config
+C:\Users\Admin\source\repos\totp2\totp2\bin\Debug\totp2.exe
+C:\Users\Admin\source\repos\totp2\totp2\bin\Debug\totp2.pdb
+C:\Users\Admin\source\repos\totp2\totp2\bin\Debug\Newtonsoft.Json.dll
+C:\Users\Admin\source\repos\totp2\totp2\bin\Debug\Otp.NET.dll
+C:\Users\Admin\source\repos\totp2\totp2\bin\Debug\Newtonsoft.Json.xml
+C:\Users\Admin\source\repos\totp2\totp2\obj\Debug\totp2.csproj.AssemblyReference.cache
+C:\Users\Admin\source\repos\totp2\totp2\obj\Debug\totp2.Form1.resources
+C:\Users\Admin\source\repos\totp2\totp2\obj\Debug\totp2.Properties.Resources.resources
+C:\Users\Admin\source\repos\totp2\totp2\obj\Debug\totp2.csproj.GenerateResource.cache
+C:\Users\Admin\source\repos\totp2\totp2\obj\Debug\totp2.csproj.CoreCompileInputs.cache
+C:\Users\Admin\source\repos\totp2\totp2\obj\Debug\totp2.csproj.CopyComplete
+C:\Users\Admin\source\repos\totp2\totp2\obj\Debug\totp2.exe
+C:\Users\Admin\source\repos\totp2\totp2\obj\Debug\totp2.pdb
