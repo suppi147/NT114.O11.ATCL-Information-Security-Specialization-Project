@@ -11,5 +11,3 @@
 ### Technologies used
 - Container Orchestration: Kubernetes. 
 - Containerization: Docker.
-- API gateway: Kong API gateway.
-- Monitor: Prometheus. 
