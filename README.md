@@ -10,6 +10,6 @@
 
 ### Technologies used
 - Infrastructure: Mesos
-- Container Orchestration: Kubernetes. 
+- Container Orchestration: Marathon Framework. 
 - Containerization: Docker.
 - Version control: Git and GitHub.
